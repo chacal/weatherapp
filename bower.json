@@ -1,0 +1,17 @@
+{
+  "name": "weatherapp",
+  "version": "0.0.1",
+  "authors": [ "Jouni Hartikainen <jouni.hartikainen@iki.fi>"],
+  "main": "main.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "proj4": "~2.3.10"
+  }
+}
