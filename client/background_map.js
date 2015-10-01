@@ -42,7 +42,7 @@ function addMarkers(map) {
     radius: 3000
   })
 
-  var marker = new googleMaps.Marker({
+  new googleMaps.Marker({
     position: map.getCenter(),
     icon: {
       path: googleMaps.SymbolPath.FORWARD_OPEN_ARROW,
