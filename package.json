@@ -1,0 +1,21 @@
+{
+  "name": "weatherapp",
+  "main": "server/app.js",
+  "browserify-shim": {
+    "google-maps": "global:google.maps"
+  },
+  "dependencies": {
+    "express": "^4.13.3",
+    "proj4": "^2.3.10",
+    "watchify": "^3.4.0"
+  },
+  "devDependencies": {
+    "browserify": "^11.2.0",
+    "browserify-shim": "^3.8.10"
+  },
+  "browserify": {
+    "transform": [
+      "browserify-shim"
+    ]
+  }
+}

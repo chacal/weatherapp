@@ -1,8 +1,12 @@
+var proj4 = require('proj4')
+var googleMaps = require('google-maps')
+
 // Register ETRS89 / ETRS-TM35FIN / EPSG:3067 projection to proj4
 proj4.defs("EPSG:3067","+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 
+var map
 function initMap() {
-  var map = new google.maps.Map(document.getElementById('map'), {
+  map = new googleMaps.Map(document.getElementById('map'), {
     center: {lat: 60, lng: 24},
     zoom: 6,
     streetViewControl: false,
@@ -10,9 +14,9 @@ function initMap() {
     scaleControl: true
   })
 
-  var customMapType = new google.maps.ImageMapType({
+  var customMapType = new googleMaps.ImageMapType({
     getTileUrl: getTaustaKarttaTile,
-    tileSize: new google.maps.Size(256, 256),
+    tileSize: new googleMaps.Size(256, 256),
     maxZoom: 15,
     minZoom: 0,
     name: 'Taustakartta'
@@ -27,7 +31,7 @@ function initMap() {
 
 
 function addMarkers(map) {
-  new google.maps.Circle({
+  new googleMaps.Circle({
     strokeColor: '#FF0000',
     strokeOpacity: 0.8,
     strokeWeight: 2,
@@ -38,10 +42,10 @@ function addMarkers(map) {
     radius: 3000
   })
 
-  var marker = new google.maps.Marker({
+  var marker = new googleMaps.Marker({
     position: map.getCenter(),
     icon: {
-      path: google.maps.SymbolPath.FORWARD_OPEN_ARROW,
+      path: googleMaps.SymbolPath.FORWARD_OPEN_ARROW,
       scale: 3
     },
     map: map
@@ -76,7 +80,7 @@ function getTaustakarttaProjection() {
       var scaledLng = (epsgLng - mapXOffsetFromEpsg3067Origin) / mapSizeInEpsg3067 * mapSizeInGoogle
       var scaledLat = mapSizeInGoogle - (epsgLat - mapYOffsetFromEpsg3067Origin) / mapSizeInEpsg3067 * mapSizeInGoogle
       //console.log("From latLng to point:", latLng.lng(), latLng.lat(), scaledLng, scaledLat)
-      return new google.maps.Point(scaledLng, scaledLat)
+      return new googleMaps.Point(scaledLng, scaledLat)
     },
     fromPointToLatLng: function(point, noWrap) {
       var scaledLng = point.x
@@ -87,7 +91,7 @@ function getTaustakarttaProjection() {
 
       var projected = proj4('EPSG:3067', 'EPSG:4326', [epsgLng, epsgLat])
       //console.log("From point to latLng:", point.x, point.y, projected[0], projected[1])
-      return new google.maps.LatLng(projected[1], projected[0], noWrap)
+      return new googleMaps.LatLng(projected[1], projected[0], noWrap)
     }
   }
 }
@@ -120,4 +124,9 @@ function getTaustaKarttaTile(coord, zoom) {
 
     return {x: x, y: y}
   }
+}
+
+module.exports = {
+  init: initMap,
+  getMap: function() { return map }
 }
