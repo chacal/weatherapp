@@ -25,31 +25,6 @@ function initMap() {
 
   map.mapTypes.set('taustakartta', customMapType)
   map.setMapTypeId('taustakartta')
-
-  addMarkers(map)
-}
-
-
-function addMarkers(map) {
-  new googleMaps.Circle({
-    strokeColor: '#FF0000',
-    strokeOpacity: 0.8,
-    strokeWeight: 2,
-    fillColor: '#FF0000',
-    fillOpacity: 0.35,
-    map: map,
-    center: {lat: 60, lng: 24.9},
-    radius: 3000
-  })
-
-  new googleMaps.Marker({
-    position: map.getCenter(),
-    icon: {
-      path: googleMaps.SymbolPath.FORWARD_OPEN_ARROW,
-      scale: 3
-    },
-    map: map
-  })
 }
 
 
