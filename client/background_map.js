@@ -5,9 +5,9 @@ var googleMaps = require('google-maps')
 proj4.defs("EPSG:3067","+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 
 var map
-function initMap() {
+function initMap(location) {
   map = new googleMaps.Map(document.getElementById('map'), {
-    center: {lat: 60, lng: 24},
+    center: location,
     zoom: 6,
     streetViewControl: false,
     mapTypeControl: false,
