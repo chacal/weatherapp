@@ -9,9 +9,9 @@ var currentLocation = {lat: 60, lng: 22}
 
 bgMap.init(currentLocation)
 
-var boundsChanges = Bacon.fromBinder(function(sink) {
-  bgMap.getMap().addListener('idle', function() { sink(bgMap.getMap().getBounds()) })
-})
+var boundsChanges = Bacon.fromBinder(sink =>
+  bgMap.getMap().addListener('idle', () => sink(bgMap.getMap().getBounds()))
+)
 
 boundsChanges.flatMapLatest(getCurrentForecasts).onValue(renderForecasts)
 
@@ -20,18 +20,18 @@ function getCurrentForecasts(bounds) {
   var boundsParam = [bounds.getSouthWest().lat(), bounds.getSouthWest().lng(), bounds.getNorthEast().lat(), bounds.getNorthEast().lng()].join(',')
   var now = moment()
   return Bacon.fromPromise($.get('http://46.101.215.154:8000/hirlam-forecast?bounds=' + boundsParam))
-    .map(function(forecastsAndLocations) {
-      return _.map(forecastsAndLocations, function(forecastAndLocation) {
-        var currentForecast = _.find(forecastAndLocation.forecasts, function(forecast) { return moment(forecast.time).isAfter(now) })
+    .map(forecastsAndLocations =>
+      _.map(forecastsAndLocations, forecastAndLocation => {
+        var currentForecast = _.find(forecastAndLocation.forecasts, forecast => moment(forecast.time).isAfter(now) )
         return { lat: forecastAndLocation.lat, lng: forecastAndLocation.lng, forecast: currentForecast }
-      })
-    })
+      }
+    ))
 }
 
 function renderForecasts(forecasts) {
-  forecasts.forEach(function(forecastAndLocation) {
+  forecasts.forEach(forecastAndLocation =>
     drawWindMarker({lat: forecastAndLocation.lat, lng: forecastAndLocation.lng}, forecastAndLocation.forecast)
-  })
+  )
 }
 
 function drawWindMarker(location, forecast) {
