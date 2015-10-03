@@ -1,5 +1,5 @@
 var proj4 = require('proj4')
-var googleMaps = require('google-maps')
+var googleMaps = require('google').maps
 
 // Register ETRS89 / ETRS-TM35FIN / EPSG:3067 projection to proj4
 proj4.defs("EPSG:3067","+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");

@@ -4,4 +4,4 @@ cd $DIR
 
 npm install
 node server/app.js &
-node_modules/.bin/watchify client/*.js -o public/js/bundle.js -v
+node_modules/.bin/webpack --watch

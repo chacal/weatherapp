@@ -1,5 +1,5 @@
 var bgMap = require('./background_map.js')
-var googleMaps = require('google-maps')
+var googleMaps = require('google').maps
 var Bacon = require('baconjs')
 var $ = require('jquery')
 var moment = require('moment')

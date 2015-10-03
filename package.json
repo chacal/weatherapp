@@ -2,10 +2,7 @@
   "name": "weatherapp",
   "main": "server/app.js",
   "scripts": {
-    "postinstall": "node_modules/.bin/browserify client/*.js -o public/js/bundle.js"
-  },
-  "browserify-shim": {
-    "google-maps": "global:google.maps"
+    "postinstall": "node_modules/.bin/webpack"
   },
   "dependencies": {
     "baconjs": "^0.7.74",
@@ -15,15 +12,6 @@
     "lodash": "^3.10.1",
     "moment": "^2.10.6",
     "proj4": "^2.3.10",
-    "watchify": "^3.4.0"
-  },
-  "devDependencies": {
-    "browserify": "^11.2.0",
-    "browserify-shim": "^3.8.10"
-  },
-  "browserify": {
-    "transform": [
-      "browserify-shim"
-    ]
+    "webpack": "^1.12.2"
   }
 }
