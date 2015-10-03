@@ -1,6 +1,9 @@
 {
   "name": "weatherapp",
   "main": "server/app.js",
+  "scripts": {
+    "postinstall": "node_modules/.bin/browserify client/*.js -o public/js/bundle.js"
+  },
   "browserify-shim": {
     "google-maps": "global:google.maps"
   },
