@@ -4,6 +4,9 @@
   "scripts": {
     "postinstall": "node_modules/.bin/browserify client/*.js -o public/js/bundle.js"
   },
+  "config": {
+    "unsafe-perm":true
+  },
   "browserify-shim": {
     "google-maps": "global:google.maps"
   },
