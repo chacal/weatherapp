@@ -19,13 +19,14 @@ boundsChanges.flatMapLatest(getCurrentForecasts).onValue(renderForecasts)
 function getCurrentForecasts(bounds) {
   var boundsParam = [bounds.getSouthWest().lat(), bounds.getSouthWest().lng(), bounds.getNorthEast().lat(), bounds.getNorthEast().lng()].join(',')
   var now = moment()
+
   return Bacon.fromPromise($.get('http://46.101.215.154:8000/hirlam-forecast?bounds=' + boundsParam))
-    .map(forecastsAndLocations =>
-      _.map(forecastsAndLocations, forecastAndLocation => {
-        var currentForecast = _.find(forecastAndLocation.forecasts, forecast => moment(forecast.time).isAfter(now) )
-        return { lat: forecastAndLocation.lat, lng: forecastAndLocation.lng, forecast: currentForecast }
-      }
-    ))
+    .map(forecastsAndLocations => forecastsAndLocations.map(getCurrentForecastForLocation))
+
+  function getCurrentForecastForLocation(forecastAndLocation) {
+    var currentForecast = forecastAndLocation.forecasts.find(forecast => moment(forecast.time).isAfter(now))
+    return {lat: forecastAndLocation.lat, lng: forecastAndLocation.lng, forecast: currentForecast}
+  }
 }
 
 function renderForecasts(forecasts) {
