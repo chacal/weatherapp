@@ -11,7 +11,8 @@ function initMap(location) {
     zoom: 6,
     streetViewControl: false,
     mapTypeControl: false,
-    scaleControl: true
+    scaleControl: true,
+    backgroundColor: 'none'
   })
 
   var customMapType = new googleMaps.ImageMapType({
@@ -19,7 +20,8 @@ function initMap(location) {
     tileSize: new googleMaps.Size(256, 256),
     maxZoom: 15,
     minZoom: 0,
-    name: 'Taustakartta'
+    name: 'Taustakartta',
+    opacity: 0.5
   })
   customMapType.projection = getTaustakarttaProjection()
 
