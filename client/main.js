@@ -47,18 +47,31 @@ function drawWindMarker(location, forecast) {
 
   function getWindMarkerSVG(windSpeed, windDir) {
     const windSpeedInt = Math.trunc(windSpeed)
-    const windSpeedDecimal = (windSpeed % 1).toFixed(1) * 10
     const oppositeWindDir = windDir - 180
+    const markerColor = getMarkerColor(windSpeedInt)
 
     return `<?xml version="1.0"?>
       <svg width="100px" height="100px" version="1.1" xmlns="http://www.w3.org/2000/svg">
       <g transform="scale(0.8)">
-        <path d="M 50 50 m -10 -30 l 10 -20 10 20 m -10 -20 l 0 95" fill="none" stroke="#6E35CC" stroke-width="2.3" transform="rotate(${oppositeWindDir} 50 50)"/>
-        <circle stroke="#222" fill="#7C3BE6" cx="50" cy="50" r="20" fill-opacity="0.9"/>
-        <g font-family="Open Sans, Verdana, sans serif" font-size="20" fill="#fff">
-          <text x="50" y="58" text-anchor="middle">${windSpeedInt}<tspan font-size="16" >.${windSpeedDecimal}</tspan></text>
+        <path d="M 50 60 m -10 -30 l 10 -20 10 20 z" fill="${markerColor}" stroke="none" transform="rotate(${oppositeWindDir} 50 50)"/>
+        <circle stroke="${markerColor}" fill="#fff" cx="50" cy="50" r="16" stroke-width="3"/>
+        <g font-family="Open Sans, Verdana, sans serif" font-size="20" fill="#000">
+          <text x="50" y="57" font-weight="bold" text-anchor="middle">${windSpeedInt}</text>
         </g>
       </g>
     </svg>`
+  }
+
+  function getMarkerColor(windSpeed) {
+    if(windSpeed < 4)
+      return '#2DC22F'
+    else if(windSpeed < 7)
+      return '#0099FF'
+    else if(windSpeed < 10)
+      return '#5852CC'
+    else if(windSpeed < 14)
+      return '#FF00FF'
+    else
+      return '#FF5050'
   }
 }
