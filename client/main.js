@@ -6,6 +6,7 @@ var moment = require('moment')
 var _ = require('lodash')
 
 var currentLocation = {lat: 60, lng: 22}
+var markers = []
 
 bgMap.init(currentLocation)
 
@@ -31,12 +32,23 @@ function getCurrentForecasts(bounds) {
 
 function renderForecasts(forecasts) {
   forecasts.forEach(forecastAndLocation =>
-    drawWindMarker({lat: forecastAndLocation.lat, lng: forecastAndLocation.lng}, forecastAndLocation.forecast)
+    drawWindMarkerIfNotAlreadyShown({lat: forecastAndLocation.lat, lng: forecastAndLocation.lng}, forecastAndLocation.forecast)
   )
 }
 
+function drawWindMarkerIfNotAlreadyShown(location, forecast) {
+  if(! markerAlreadyDrawn()) {
+    var marker = drawWindMarker(location, forecast)
+    markers.push({ location: location, forecast: forecast, marker: marker })
+  }
+
+  function markerAlreadyDrawn() {
+    return _.find(markers, marker => _.isEqual(marker.location, location) && _.isEqual(marker.forecast, forecast))
+  }
+}
+
 function drawWindMarker(location, forecast) {
-  new googleMaps.Marker({
+  return new googleMaps.Marker({
     position: location,
     map: bgMap.getMap(),
     icon: {
