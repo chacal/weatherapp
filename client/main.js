@@ -1,89 +1,110 @@
+var modernizr = require('exports?window.Modernizr!./modernizr-custom')
 var bgMap = require('./background_map.js')
 var googleMaps = require('google').maps
 var Bacon = require('baconjs')
 var $ = require('jquery')
 var moment = require('moment')
 var _ = require('lodash')
+var noUiSlider = require('nouislider')
+require('normalize.css')
+require('../node_modules/nouislider/distribute/nouislider.min.css')
+require('../public/css/main.css')
 
+var HOURS_PER_SLIDER_STEP = 3
 var currentLocation = {lat: 60, lng: 22}
-var markers = []
 
-bgMap.init(currentLocation)
-
-var boundsChanges = Bacon.fromBinder(sink =>
-  bgMap.getMap().addListener('idle', () => sink(bgMap.getMap().getBounds()))
-)
-
-boundsChanges.flatMapLatest(getCurrentForecasts).onValue(renderForecasts)
+const map = bgMap.init(currentLocation)
+const navigationSlider = NavigationSlider()
 
 
-function getCurrentForecasts(bounds) {
-  var boundsParam = [bounds.getSouthWest().lat(), bounds.getSouthWest().lng(), bounds.getNorthEast().lat(), bounds.getNorthEast().lng()].join(',')
-  var now = moment()
+initializeNavigationButtons()
+initializeEventStreams()
 
-  return Bacon.fromPromise($.get('http://46.101.215.154:8000/hirlam-forecast?bounds=' + boundsParam))
-    .map(forecastsAndLocations => forecastsAndLocations.map(getCurrentForecastForLocation))
 
-  function getCurrentForecastForLocation(forecastAndLocation) {
-    var currentForecast = forecastAndLocation.forecasts.find(forecast => moment(forecast.time).isAfter(now))
-    return {lat: forecastAndLocation.lat, lng: forecastAndLocation.lng, forecast: currentForecast}
-  }
-}
+function initializeNavigationButtons() {
+  var $navigationContainer = $(`<div id="navigationContainer">
+    <button id="previousForecast" class="navigationButton"><</button>
+    <button id="nextForecast" class="navigationButton">></button>
+  </div>`)
 
-function renderForecasts(forecasts) {
-  forecasts.forEach(forecastAndLocation =>
-    drawWindMarkerIfNotAlreadyShown({lat: forecastAndLocation.lat, lng: forecastAndLocation.lng}, forecastAndLocation.forecast)
-  )
-}
+  map.controls[googleMaps.ControlPosition.RIGHT_BOTTOM].push($navigationContainer.get(0))
 
-function drawWindMarkerIfNotAlreadyShown(location, forecast) {
-  if(! markerAlreadyDrawn()) {
-    var marker = drawWindMarker(location, forecast)
-    markers.push({ location: location, forecast: forecast, marker: marker })
-  }
-
-  function markerAlreadyDrawn() {
-    return _.find(markers, marker => _.isEqual(marker.location, location) && _.isEqual(marker.forecast, forecast))
-  }
-}
-
-function drawWindMarker(location, forecast) {
-  return new googleMaps.Marker({
-    position: location,
-    map: bgMap.getMap(),
-    icon: {
-      anchor: new google.maps.Point(50, 50),
-      url: 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(getWindMarkerSVG(forecast.windSpeedMs, forecast.windDir))
-    }
+  const buttonEvent = modernizr.touchevents ? 'touchend' : 'click'
+  $('#map').on(buttonEvent, '#previousForecast', () => {
+    const adjustment = navigationSlider.getValue() % HOURS_PER_SLIDER_STEP === 0 ? HOURS_PER_SLIDER_STEP : navigationSlider.getValue() % HOURS_PER_SLIDER_STEP
+    navigationSlider.setValue(navigationSlider.getValue() - adjustment)
   })
+  $('#map').on(buttonEvent, '#nextForecast', () => navigationSlider.setValue(navigationSlider.getValue() + HOURS_PER_SLIDER_STEP))
+}
 
-  function getWindMarkerSVG(windSpeed, windDir) {
-    const windSpeedInt = Math.trunc(windSpeed)
-    const oppositeWindDir = windDir - 180
-    const markerColor = getMarkerColor(windSpeedInt)
 
-    return `<?xml version="1.0"?>
-      <svg width="100px" height="100px" version="1.1" xmlns="http://www.w3.org/2000/svg">
-      <g transform="scale(0.8)">
-        <path d="M 50 60 m -10 -30 l 10 -20 10 20 z" fill="${markerColor}" stroke="none" transform="rotate(${oppositeWindDir} 50 50)"/>
-        <circle stroke="${markerColor}" fill="#fff" cx="50" cy="50" r="16" stroke-width="3"/>
-        <g font-family="Open Sans, Verdana, sans serif" font-size="20" fill="#000">
-          <text x="50" y="57" font-weight="bold" text-anchor="middle">${windSpeedInt}</text>
-        </g>
-      </g>
-    </svg>`
+function initializeEventStreams() {
+  const forecastRendering = require('./forecast_rendering')(map)
+  const boundsChanges = Bacon.fromBinder(sink => map.addListener('idle', () => sink(map.getBounds())))
+
+  boundsChanges
+    .flatMapLatest(getForecasts)
+    .map(forecasts => {
+      const availableForecastItems = forecasts[0].forecasts.length
+      return { forecasts: forecasts, slider: navigationSlider.initialize(availableForecastItems - 1) }
+    })
+    .flatMapLatest(forecastAndSlider => {
+      return Bacon.once(0)
+        .merge(sliderChanges(forecastAndSlider.slider))
+        .map(sliderValue => ({ forecasts: forecastAndSlider.forecasts, sliderValue: sliderValue }))
+    })
+    .onValue(forecastAndSliderValue => forecastRendering.renderSelectedForecasts(forecastAndSliderValue.forecasts, forecastAndSliderValue.sliderValue))
+
+
+  function sliderChanges(slider) {
+    return sliderEvents(slider, 'slide').debounceImmediate(300).merge(sliderEvents(slider, 'set')).skipDuplicates()
   }
 
-  function getMarkerColor(windSpeed) {
-    if(windSpeed < 4)
-      return '#2DC22F'
-    else if(windSpeed < 7)
-      return '#0099FF'
-    else if(windSpeed < 10)
-      return '#5852CC'
-    else if(windSpeed < 14)
-      return '#FF00FF'
-    else
-      return '#FF5050'
+  function sliderEvents(slider, eventName) {
+    return Bacon.fromEvent(slider, eventName, (formattedValue, handle, rawValue) => rawValue)
+  }
+
+  function getForecasts(bounds) {
+    var boundsParam = [bounds.getSouthWest().lat(), bounds.getSouthWest().lng(), bounds.getNorthEast().lat(), bounds.getNorthEast().lng()].join(',')
+    var startTime = encodeURIComponent(moment().format())
+    return Bacon.fromPromise($.get(`http://46.101.215.154:8000/hirlam-forecast?bounds=${boundsParam}&startTime=${startTime}`))
+  }
+}
+
+
+/*
+  Navigation Slider
+ */
+function NavigationSlider() {
+  const sliderElem = document.getElementById('slider')
+
+  function initializeSlider(maxValue) {
+    const oldSliderValue = getSliderValue()
+
+    if(oldSliderValue !== undefined)
+      destroySlider()
+
+    noUiSlider.create(sliderElem, {
+      start: oldSliderValue || 0,
+      connect: 'lower',
+      animate: false,
+      range: {
+        min: 0,
+        max: maxValue
+      },
+      step: HOURS_PER_SLIDER_STEP
+    })
+
+    return sliderElem.noUiSlider
+  }
+
+  function getSliderValue() { return sliderElem.noUiSlider ? parseInt(sliderElem.noUiSlider.get()) : undefined }
+  function setSliderValue(newValue) { sliderElem.noUiSlider.set(newValue) }
+  function destroySlider() { sliderElem.noUiSlider.destroy() }
+
+  return {
+    initialize: initializeSlider,
+    getValue: getSliderValue,
+    setValue: setSliderValue
   }
 }

@@ -1,3 +1,5 @@
+require('es6-promise').polyfill()  // Needed for older Node.js versions
+
 module.exports = {
   entry: './client/main.js',
   output: {

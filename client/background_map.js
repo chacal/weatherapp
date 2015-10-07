@@ -1,17 +1,19 @@
+var modernizr = require('exports?window.Modernizr!./modernizr-custom')
 var proj4 = require('proj4')
 var googleMaps = require('google').maps
 
 // Register ETRS89 / ETRS-TM35FIN / EPSG:3067 projection to proj4
 proj4.defs("EPSG:3067","+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
 
-var map
 function initMap(location) {
-  map = new googleMaps.Map(document.getElementById('map'), {
+  const map = new googleMaps.Map(document.getElementById('map'), {
     center: location,
     zoom: 6,
     streetViewControl: false,
     mapTypeControl: false,
     scaleControl: true,
+    zoomControl: !modernizr.touchevents,
+    zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_TOP },
     backgroundColor: 'none'
   })
 
@@ -27,6 +29,7 @@ function initMap(location) {
 
   map.mapTypes.set('taustakartta', customMapType)
   map.setMapTypeId('taustakartta')
+  return map
 }
 
 
@@ -104,6 +107,5 @@ function getTaustaKarttaTile(coord, zoom) {
 }
 
 module.exports = {
-  init: initMap,
-  getMap: function() { return map }
+  init: initMap
 }

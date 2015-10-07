@@ -9,11 +9,17 @@
     "babel-loader": "^5.3.2",
     "baconjs": "^0.7.74",
     "compression": "^1.6.0",
+    "css-loader": "^0.19.0",
+    "es6-promise": "^3.0.2",
+    "exports-loader": "^0.6.2",
     "express": "^4.13.3",
     "jquery": "^2.1.4",
     "lodash": "^3.10.1",
     "moment": "^2.10.6",
+    "normalize.css": "^3.0.3",
+    "nouislider": "^8.0.2",
     "proj4": "^2.3.10",
+    "style-loader": "^0.12.4",
     "webpack": "^1.12.2"
   }
 }
