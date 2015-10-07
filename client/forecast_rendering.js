@@ -7,21 +7,21 @@ var markers = []
 
 module.exports = function(map) {
 
-  function renderForecasts(forecasts, forecastItemIndex) {
-    forecasts.forEach(forecast => drawWindMarkerIfNotAlreadyShown({lat: forecast.lat, lng: forecast.lng}, forecast.forecasts[forecastItemIndex]))
+  function renderSelectedForecastItems(forecasts, forecastItemIndex) {
+    forecasts.forEach(forecast => drawWindMarkerIfNotAlreadyShown({lat: forecast.lat, lng: forecast.lng}, forecast.items[forecastItemIndex]))
   }
 
-  function drawWindMarkerIfNotAlreadyShown(location, forecast) {
+  function drawWindMarkerIfNotAlreadyShown(location, forecastItem) {
     if(! sameMarkerAlreadyDrawn()) {
-      var marker = drawWindMarker(location, forecast)
+      var marker = drawWindMarker(location, forecastItem)
       setTimeout(() => {
         removeMarkerFromLocation(location)
-        markers.push({ location: location, forecast: forecast, marker: marker })
+        markers.push({ location: location, forecastItem: forecastItem, marker: marker })
       }, 200)
     }
 
     function sameMarkerAlreadyDrawn() {
-      return _.find(markers, marker => _.isEqual(marker.location, location) && _.isEqual(marker.forecast, forecast))
+      return _.find(markers, marker => _.isEqual(marker.location, location) && _.isEqual(marker.forecastItem, forecastItem))
     }
 
     function removeMarkerFromLocation(location) {
@@ -33,13 +33,13 @@ module.exports = function(map) {
     }
   }
 
-  function drawWindMarker(location, forecast) {
+  function drawWindMarker(location, forecastItem) {
     return new googleMaps.Marker({
       position: location,
       map: map,
       icon: {
         anchor: new google.maps.Point(50, 50),
-        url: 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(getWindMarkerSVG(forecast.windSpeedMs, forecast.windDir))
+        url: 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(getWindMarkerSVG(forecastItem.windSpeedMs, forecastItem.windDir))
       }
     })
 
@@ -75,6 +75,6 @@ module.exports = function(map) {
   }
 
   return {
-    renderSelectedForecasts: renderForecasts
+    renderSelectedForecastItems: renderSelectedForecastItems
   }
 }

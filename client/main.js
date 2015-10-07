@@ -45,7 +45,7 @@ function initializeEventStreams() {
   boundsChanges
     .flatMapLatest(getForecasts)
     .map(forecasts => {
-      const availableForecastItems = forecasts[0].forecasts.length
+      const availableForecastItems = forecasts[0].items.length
       return { forecasts: forecasts, slider: navigationSlider.initialize(availableForecastItems - 1) }
     })
     .flatMapLatest(forecastAndSlider => {
@@ -53,7 +53,7 @@ function initializeEventStreams() {
         .merge(sliderChanges(forecastAndSlider.slider))
         .map(sliderValue => ({ forecasts: forecastAndSlider.forecasts, sliderValue: sliderValue }))
     })
-    .onValue(forecastAndSliderValue => forecastRendering.renderSelectedForecasts(forecastAndSliderValue.forecasts, forecastAndSliderValue.sliderValue))
+    .onValue(forecastAndSliderValue => forecastRendering.renderSelectedForecastItems(forecastAndSliderValue.forecasts, forecastAndSliderValue.sliderValue))
 
 
   function sliderChanges(slider) {
