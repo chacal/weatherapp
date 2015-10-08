@@ -50,7 +50,7 @@ function initializeEventStreams() {
       return { forecasts: forecasts, slider: navigationSlider.initialize(availableForecastItems - 1) }
     })
     .flatMapLatest(forecastAndSlider => {
-      return Bacon.once(0)
+      return Bacon.once(parseInt(forecastAndSlider.slider.get()))
         .merge(sliderChanges(forecastAndSlider.slider))
         .map(sliderValue => ({ forecasts: forecastAndSlider.forecasts, sliderValue: sliderValue }))
     })
