@@ -8,7 +8,7 @@ proj4.defs("EPSG:3067","+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +
 function initMap(location) {
   const map = new googleMaps.Map(document.getElementById('map'), {
     center: location,
-    zoom: 6,
+    zoom: 5,
     streetViewControl: false,
     mapTypeControl: false,
     scaleControl: true,
