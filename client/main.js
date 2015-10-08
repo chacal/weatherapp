@@ -11,7 +11,7 @@ require('../node_modules/nouislider/distribute/nouislider.min.css')
 require('../public/css/main.css')
 
 var HOURS_PER_SLIDER_STEP = 3
-var currentLocation = {lat: 60, lng: 22}
+var currentLocation = {lat: 60, lng: 25}
 
 const map = bgMap.init(currentLocation)
 const navigationSlider = NavigationSlider()
