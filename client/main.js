@@ -19,12 +19,13 @@ const navigationSlider = NavigationSlider()
 
 initializeNavigationButtons()
 initializeEventStreams()
+initializeForecastTimePanel()
 
 
 function initializeNavigationButtons() {
   var $navigationContainer = $(`<div id="navigationContainer">
-    <button id="previousForecast" class="navigationButton"><</button>
-    <button id="nextForecast" class="navigationButton">></button>
+    <button id="previousForecast" class="navigationButton mapControl"><</button>
+    <button id="nextForecast" class="navigationButton mapControl">></button>
   </div>`)
 
   map.controls[googleMaps.ControlPosition.RIGHT_BOTTOM].push($navigationContainer.get(0))
@@ -53,7 +54,10 @@ function initializeEventStreams() {
         .merge(sliderChanges(forecastAndSlider.slider))
         .map(sliderValue => ({ forecasts: forecastAndSlider.forecasts, sliderValue: sliderValue }))
     })
-    .onValue(forecastAndSliderValue => forecastRendering.renderSelectedForecastItems(forecastAndSliderValue.forecasts, forecastAndSliderValue.sliderValue))
+    .onValue(forecastAndSliderValue => {
+      forecastRendering.renderSelectedForecastItems(forecastAndSliderValue.forecasts, forecastAndSliderValue.sliderValue)
+      updateForecastTime(forecastAndSliderValue.forecasts, forecastAndSliderValue.sliderValue)
+    })
 
 
   function sliderChanges(slider) {
@@ -69,6 +73,15 @@ function initializeEventStreams() {
     var startTime = encodeURIComponent(moment().format())
     return Bacon.fromPromise($.get(`http://46.101.215.154:8000/hirlam-forecast?bounds=${boundsParam}&startTime=${startTime}`))
   }
+
+  function updateForecastTime(forecasts, forecastItemIndex) {
+    $('#renderedTime').empty().append(moment(forecasts[0].items[forecastItemIndex].time).format("ddd HH:mm"))
+  }
+}
+
+function initializeForecastTimePanel() {
+  var $renderedTime = $(`<div id="renderedTime" class="mapControl">-</div>`)
+  map.controls[googleMaps.ControlPosition.TOP_CENTER].push($renderedTime.get(0))
 }
 
 

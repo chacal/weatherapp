@@ -26,12 +26,8 @@ body {
     background-color: #0099FF;
 }
 
-#navigationContainer {
+.mapControl {
     margin: 10px;
-}
-
-.navigationButton {
-    width: 40px;
     height: 40px;
     line-height: 40px;
     text-align: center;
@@ -41,9 +37,22 @@ body {
     font-family: Roboto,Arial,sans-serif;
     font-size: 24px;
     font-weight: 400;
-    cursor: pointer;
     border-radius: 2px;
     color: #666;
     padding: 0;
+}
+
+.navigationButton {
+    width: 40px;
+    cursor: pointer;
     margin-left: 10px;
+}
+
+#renderedTime {
+    margin-top: 5px;
+    padding: 0;
+    height: 28px;
+    line-height: 28px;
+    width: 160px;
+    font-size: 18px;
 }
