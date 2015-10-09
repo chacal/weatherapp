@@ -41,7 +41,7 @@ function initializeNavigationButtons() {
 
 function initializeEventStreams() {
   const forecastRendering = require('./forecast_rendering')(map)
-  const boundsChanges = Bacon.fromBinder(sink => map.addListener('idle', () => sink(map.getBounds())))
+  const boundsChanges = Bacon.fromEvent(map, 'idle', () => map.getBounds())
 
   boundsChanges
     .flatMapLatest(getForecasts)
