@@ -45,6 +45,7 @@ function initializeEventStreams() {
 
   boundsChanges
     .flatMapLatest(getForecasts)
+    .filter(forecasts => forecasts.length > 0)
     .map(forecasts => {
       const availableForecastItems = forecasts[0].items.length
       return { forecasts: forecasts, slider: navigationSlider.initialize(availableForecastItems - 1) }
