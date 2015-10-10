@@ -78,6 +78,7 @@ module.exports = function(map) {
   }
 
   function showPointForecastPopup(forecastItemsE) {
+    $('#popupContainer').css('display', '-webkit-flex')
     $('#popupContainer').css('display', 'flex')
     $("#forecastChart").hide()
     $('#popupContainer .spinner').show()
