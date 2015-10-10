@@ -11,9 +11,15 @@
 <body>
 <div id="map"></div>
 <div id="slider"></div>
-<div id="popupContainer">
+<div id="popupContainer" style="display: none;">
   <div id="forecastPopup">
     <canvas id="forecastChart"></canvas>
+    <div class="spinner">
+      <p>Loading forecast..</p>
+      <div class="bounce1"></div>
+      <div class="bounce2"></div>
+      <div class="bounce3"></div>
+    </div>
   </div>
 </div>
 <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDSMZ8r9_XrWpvFeLikZYcnJFtFlsfvrtk"></script>

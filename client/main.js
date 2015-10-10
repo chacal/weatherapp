@@ -64,12 +64,11 @@ function initializeEventStreams() {
   // Show forecast popup when point on map is clicked
   Bacon.fromEvent(map, 'click')
     .map(e => e.latLng)
-    .flatMapLatest(latLng => {
+    .onValue(latLng => {
       var startTime = encodeURIComponent(moment().format())
-      return Bacon.fromPromise($.get(`http://46.101.215.154:8000/hirlam-forecast?lat=${latLng.lat()}&lon=${latLng.lng()}&startTime=${startTime}`))
-    })
-    .onValue(forecastItems => {
-      forecastRendering.showPointForecastPopup(forecastItems.filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
+      var forecastItemsE = Bacon.fromPromise($.get(`http://46.101.215.154:8000/hirlam-forecast?lat=${latLng.lat()}&lon=${latLng.lng()}&startTime=${startTime}`))
+        .map(forecastItems => forecastItems.filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
+      forecastRendering.showPointForecastPopup(forecastItemsE)
     })
 
 

@@ -77,29 +77,36 @@ module.exports = function(map) {
     }
   }
 
-  function showPointForecastPopup(forecastItems) {
+  function showPointForecastPopup(forecastItemsE) {
     $('#popupContainer').css('display', 'flex')
-    var ctx = $("#forecastChart").get(0).getContext("2d")
-    var windSpeeds = forecastItems.map(item => item.windSpeedMs)
-    var labels = forecastItems.map(item => moment(item.time).format("HH:mm"))
+    $("#forecastChart").hide()
+    $('#popupContainer .spinner').show()
+    forecastItemsE.onValue(forecastItems => {
+      $('#popupContainer .spinner').hide()
+      $("#forecastChart").show()
 
-    var data = {
-      labels: labels,
-      datasets: [{
-        fillColor: "rgba(0,153,255,0.2)",
-        strokeColor: "rgba(0,153,255,0.9)",
-        data: windSpeeds
-      }]
-    }
+      var ctx = $("#forecastChart").get(0).getContext("2d")
+      var windSpeeds = forecastItems.map(item => item.windSpeedMs)
+      var labels = forecastItems.map(item => moment(item.time).format("HH:mm"))
 
-    const options = {
-      animation: false,
-      showTooltips: false,
-      bezierCurveTension : 0.3,
-      pointDot: false
-    }
+      var data = {
+        labels: labels,
+        datasets: [{
+          fillColor: "rgba(0,153,255,0.2)",
+          strokeColor: "rgba(0,153,255,0.9)",
+          data: windSpeeds
+        }]
+      }
 
-    new ChartJs(ctx).Line(data, options)
+      const options = {
+        animation: false,
+        showTooltips: false,
+        bezierCurveTension : 0.3,
+        pointDot: false
+      }
+
+      new ChartJs(ctx).Line(data, options)
+    })
   }
 
   return {
