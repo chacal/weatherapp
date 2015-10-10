@@ -81,15 +81,16 @@ module.exports = function(map) {
     $('#popupContainer').css('display', '-webkit-flex')
     $('#popupContainer').css('display', 'flex')
     $('#popupContainer .spinner').show()
-    $(".forecastChart").remove()
+    $(".forecastData").empty().hide()
     forecastItemsE.onValue(forecastItems => {
-      $(".forecastChart").remove()
+      $(".forecastData").empty().show()
       $('#popupContainer .spinner').hide()
       const $forecastChart = $('<canvas class="forecastChart">')
-      $('#forecastPopup').prepend($forecastChart)
+      $('#forecastPopup .forecastData').prepend($forecastChart)
 
       var ctx = $forecastChart.get(0).getContext("2d")
       var windSpeeds = forecastItems.map(item => item.windSpeedMs)
+      var windDirs = forecastItems.map(item => item.windDir)
       var labels = forecastItems.map(item => moment(item.time).format("HH:mm"))
 
       var data = {
@@ -110,6 +111,18 @@ module.exports = function(map) {
       }
 
       new ChartJs(ctx).Line(data, options)
+
+      const $windDirContainer = $('<div class="windDirContainer">')
+      windDirs.forEach(windDir => {
+        $windDirContainer.append($('<span class="windDir">').text('\u2193')
+          .css({
+            '-webkit-transform': 'rotate(' + windDir + 'deg)',
+            'transform': 'rotate(' + windDir + 'deg)'
+          })
+        )
+      })
+      $('.forecastData').append($windDirContainer)
+
     })
   }
 
