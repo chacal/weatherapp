@@ -80,13 +80,15 @@ module.exports = function(map) {
   function showPointForecastPopup(forecastItemsE) {
     $('#popupContainer').css('display', '-webkit-flex')
     $('#popupContainer').css('display', 'flex')
-    $("#forecastChart").hide()
     $('#popupContainer .spinner').show()
+    $(".forecastChart").remove()
     forecastItemsE.onValue(forecastItems => {
+      $(".forecastChart").remove()
       $('#popupContainer .spinner').hide()
-      $("#forecastChart").show()
+      const $forecastChart = $('<canvas class="forecastChart">')
+      $('#forecastPopup').prepend($forecastChart)
 
-      var ctx = $("#forecastChart").get(0).getContext("2d")
+      var ctx = $forecastChart.get(0).getContext("2d")
       var windSpeeds = forecastItems.map(item => item.windSpeedMs)
       var labels = forecastItems.map(item => moment(item.time).format("HH:mm"))
 
