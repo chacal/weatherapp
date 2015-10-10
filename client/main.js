@@ -43,6 +43,7 @@ function initializeEventStreams() {
   const forecastRendering = require('./forecast_rendering')(map)
   const boundsChanges = Bacon.fromEvent(map, 'idle', () => map.getBounds())
 
+  // Render wind markers when map bounds change
   boundsChanges
     .flatMapLatest(getForecasts)
     .filter(forecasts => forecasts.length > 0)
@@ -59,6 +60,20 @@ function initializeEventStreams() {
       forecastRendering.renderSelectedForecastItems(forecastAndSliderValue.forecasts, forecastAndSliderValue.sliderValue)
       updateForecastTime(forecastAndSliderValue.forecasts, forecastAndSliderValue.sliderValue)
     })
+
+  // Show forecast popup when point on map is clicked
+  Bacon.fromEvent(map, 'click')
+    .map(e => e.latLng)
+    .flatMapLatest(latLng => {
+      var startTime = encodeURIComponent(moment().format())
+      return Bacon.fromPromise($.get(`http://46.101.215.154:8000/hirlam-forecast?lat=${latLng.lat()}&lon=${latLng.lng()}&startTime=${startTime}`))
+    })
+    .onValue(forecastItems => {
+      forecastRendering.showPointForecastPopup(forecastItems.filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
+    })
+
+
+  $('#popupContainer').click(() => $('#popupContainer').css('display', 'none'))
 
 
   function sliderChanges(slider) {

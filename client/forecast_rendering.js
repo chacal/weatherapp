@@ -1,6 +1,8 @@
 var moment = require('moment')
 var _ = require('lodash')
 var googleMaps = require('google').maps
+var ChartJs = require('chart.js')
+var $ = require('jquery')
 
 
 var markers = []
@@ -40,7 +42,8 @@ module.exports = function(map) {
       icon: {
         anchor: new google.maps.Point(50, 50),
         url: 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(getWindMarkerSVG(forecastItem.windSpeedMs, forecastItem.windDir))
-      }
+      },
+      clickable: false
     })
 
     function getWindMarkerSVG(windSpeed, windDir) {
@@ -74,7 +77,33 @@ module.exports = function(map) {
     }
   }
 
+  function showPointForecastPopup(forecastItems) {
+    $('#popupContainer').css('display', 'flex')
+    var ctx = $("#forecastChart").get(0).getContext("2d")
+    var windSpeeds = forecastItems.map(item => item.windSpeedMs)
+    var labels = forecastItems.map(item => moment(item.time).format("HH:mm"))
+
+    var data = {
+      labels: labels,
+      datasets: [{
+        fillColor: "rgba(0,153,255,0.2)",
+        strokeColor: "rgba(0,153,255,0.9)",
+        data: windSpeeds
+      }]
+    }
+
+    const options = {
+      animation: false,
+      showTooltips: false,
+      bezierCurveTension : 0.3,
+      pointDot: false
+    }
+
+    new ChartJs(ctx).Line(data, options)
+  }
+
   return {
-    renderSelectedForecastItems: renderSelectedForecastItems
+    renderSelectedForecastItems: renderSelectedForecastItems,
+    showPointForecastPopup: showPointForecastPopup
   }
 }

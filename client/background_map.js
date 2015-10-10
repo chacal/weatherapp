@@ -14,7 +14,8 @@ function initMap(location) {
     scaleControl: true,
     zoomControl: !modernizr.touchevents,
     zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_TOP },
-    backgroundColor: 'none'
+    backgroundColor: 'none',
+    draggableCursor: 'pointer'
   })
 
   var customMapType = new googleMaps.ImageMapType({
