@@ -105,7 +105,8 @@ module.exports = function(map) {
         animation: false,
         showTooltips: false,
         bezierCurveTension : 0.3,
-        pointDot: false
+        pointDot: false,
+        scaleBeginAtZero: true
       }
 
       new ChartJs(ctx).Line(data, options)
