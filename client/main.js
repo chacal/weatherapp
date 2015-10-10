@@ -61,8 +61,18 @@ function initializeEventStreams() {
       updateForecastTime(forecastAndSliderValue.forecasts, forecastAndSliderValue.sliderValue)
     })
 
+  const mapClicks = function() {  // Only for namespacing, called immediately
+    const delayedClicks = Bacon.fromEvent(map, 'click').delay(200)
+    const dblClicks = Bacon.fromEvent(map, 'dblclick').map(() => 'dblClick')
+    return delayedClicks.merge(dblClicks)
+      .slidingWindow(2)
+      .filter(events => !_.includes(events, 'dblClick'))  // Click happens only if double click has not happened
+      .map(events => _.last(events))
+      .filter(_.identity)
+  }()
+
   // Show forecast popup when point on map is clicked
-  Bacon.fromEvent(map, 'click')
+  mapClicks
     .map(e => e.latLng)
     .onValue(latLng => {
       var startTime = encodeURIComponent(moment().format())
