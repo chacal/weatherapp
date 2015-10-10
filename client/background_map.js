@@ -1,5 +1,6 @@
 var proj4 = require('proj4')
 var googleMaps = require('google').maps
+var $ = require('jquery')
 
 // Register ETRS89 / ETRS-TM35FIN / EPSG:3067 projection to proj4
 proj4.defs("EPSG:3067","+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
@@ -22,10 +23,15 @@ function initMap(location) {
     tileSize: new googleMaps.Size(256, 256),
     maxZoom: 15,
     minZoom: 0,
-    name: 'Taustakartta',
-    opacity: 0.5
+    name: 'Taustakartta'
   })
   customMapType.projection = getTaustakarttaProjection()
+
+  customMapType.getTile = function(coord, zoom, ownerDocument) {
+    const tile = googleMaps.ImageMapType.prototype.getTile.call(customMapType, coord, zoom, ownerDocument)
+    $(tile).append('<div class="imageOverlay">')
+    return tile
+  }
 
   map.mapTypes.set('taustakartta', customMapType)
   map.setMapTypeId('taustakartta')
