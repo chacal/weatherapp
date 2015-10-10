@@ -1,4 +1,3 @@
-var modernizr = require('exports?window.Modernizr!./modernizr-custom')
 var proj4 = require('proj4')
 var googleMaps = require('google').maps
 
@@ -12,7 +11,7 @@ function initMap(location) {
     streetViewControl: false,
     mapTypeControl: false,
     scaleControl: true,
-    zoomControl: !modernizr.touchevents,
+    zoomControl: true,
     zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_TOP },
     backgroundColor: 'none',
     draggableCursor: 'pointer'
