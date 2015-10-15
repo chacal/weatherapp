@@ -29,7 +29,16 @@ function initMap(location) {
 
   customMapType.getTile = function(coord, zoom, ownerDocument) {
     const tile = googleMaps.ImageMapType.prototype.getTile.call(customMapType, coord, zoom, ownerDocument)
-    $(tile).append('<div class="imageOverlay">')
+
+    // <img> tag we want to overlay is added dynamically -> listen for DOM changes and add our overlay only after the <img> has been added
+    const observer = new MutationObserver(function(mutations) {
+      if(_.findIndex(mutations, mutation => mutation.addedNodes && mutation.addedNodes.length > 0 && mutation.addedNodes[0].tagName.toUpperCase() === 'IMG') > -1) {
+        $(tile).append('<div class="imageOverlay">')
+        this.disconnect()
+      }
+    })
+    observer.observe(tile, { childList: true })
+
     return tile
   }
 
