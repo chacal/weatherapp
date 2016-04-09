@@ -82,11 +82,13 @@ module.exports = function(map) {
     $('#popupContainer').css('display', 'flex')
     $('#popupContainer .spinner').show()
     $(".forecastData").empty().hide()
+    $(".forecastHeader").hide()
     forecastItemsE.onValue(forecastItems => {
       $(".forecastData").empty().show()
+      $(".forecastHeader").show()
       $('#popupContainer .spinner').hide()
       const $forecastChart = $('<canvas class="forecastChart">')
-      $('#forecastPopup .forecastData').prepend($forecastChart)
+      $('#forecastPopup .forecastData').append($forecastChart)
 
       var ctx = $forecastChart.get(0).getContext("2d")
       var windSpeeds = forecastItems.map(item => item.windSpeedMs)
