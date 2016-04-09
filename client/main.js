@@ -15,7 +15,7 @@ var currentLocation = {lat: 60, lng: 25}
 
 const map = bgMap.init(currentLocation)
 const navigationSlider = NavigationSlider()
-
+const fmiProxyUrl = 'http://212.47.244.102:8000'
 
 initializeNavigationButtons()
 initializeEventStreams()
@@ -76,7 +76,7 @@ function initializeEventStreams() {
     .map(e => e.latLng)
     .onValue(latLng => {
       var startTime = encodeURIComponent(moment().format())
-      var forecastItemsE = Bacon.fromPromise($.get(`http://46.101.215.154:8000/hirlam-forecast?lat=${latLng.lat()}&lon=${latLng.lng()}&startTime=${startTime}`))
+      var forecastItemsE = Bacon.fromPromise($.get(`${fmiProxyUrl}/hirlam-forecast?lat=${latLng.lat()}&lon=${latLng.lng()}&startTime=${startTime}`))
         .map(forecastItems => forecastItems.filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
       forecastRendering.showPointForecastPopup(forecastItemsE)
     })
@@ -96,7 +96,7 @@ function initializeEventStreams() {
   function getForecasts(bounds) {
     var boundsParam = [bounds.getSouthWest().lat(), bounds.getSouthWest().lng(), bounds.getNorthEast().lat(), bounds.getNorthEast().lng()].join(',')
     var startTime = encodeURIComponent(moment().format())
-    return Bacon.fromPromise($.get(`http://46.101.215.154:8000/hirlam-forecast?bounds=${boundsParam}&startTime=${startTime}`))
+    return Bacon.fromPromise($.get(`${fmiProxyUrl}/hirlam-forecast?bounds=${boundsParam}&startTime=${startTime}`))
   }
 
   function updateForecastTime(forecasts, forecastItemIndex) {
