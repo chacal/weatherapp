@@ -108,7 +108,8 @@ module.exports = function(map) {
         bezierCurveTension : 0.3,
         pointDot: false,
         scaleBeginAtZero: true,
-        responsive: true
+        responsive: true,
+        maintainAspectRatio: false
       }
 
       new ChartJs(ctx).Line(data, options)
