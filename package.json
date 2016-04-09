@@ -2,7 +2,8 @@
   "name": "weatherapp",
   "main": "server/app.js",
   "scripts": {
-    "postinstall": "node_modules/.bin/webpack"
+    "postinstall": "node_modules/.bin/webpack",
+    "start": "node server/app.js"
   },
   "dependencies": {
     "babel-core": "^5.8.25",
