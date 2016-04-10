@@ -16,8 +16,11 @@ var fileLoggerStream = {
 
 var consoleLogger = new winston.Logger({ transports: [ new (winston.transports.Console)() ] })
 
+var requestLoggingFormat = ':remote-addr - :remote-user [:date[clf]] ":method :url HTTP/:http-version" :status :res[content-length] (:response-time[1]ms) ":referrer" ":user-agent"'
+
 module.exports = {
   console: consoleLogger,
   file: fileLogger,
-  fileLoggerStream: fileLoggerStream
+  fileLoggerStream: fileLoggerStream,
+  requestLoggingFormat: requestLoggingFormat
 }

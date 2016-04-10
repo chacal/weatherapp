@@ -6,7 +6,7 @@ var logger = logging.console
 
 var app = express()
 app.set('port', (process.env.PORT || 8005))
-app.use(morgan('combined', { stream: logging.fileLoggerStream }))
+app.use(morgan(logging.requestLoggingFormat, { stream: logging.fileLoggerStream }))
 
 logger.info("Starting weatherapp..")
 
