@@ -80,6 +80,8 @@ module.exports = function(map) {
   function showPointForecastPopup(forecastItemsE) {
     $('#popupContainer').css('display', '-webkit-flex')
     $('#popupContainer').css('display', 'flex')
+    $('#popupContainer #forecastPopup').css('display', '-webkit-flex')
+    $('#popupContainer #forecastPopup').css('display', 'flex')
     $('#popupContainer .spinner').show()
     $(".forecastData").empty().hide()
     $(".forecastHeader").hide()

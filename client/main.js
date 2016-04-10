@@ -18,6 +18,7 @@ const navigationSlider = NavigationSlider()
 const fmiProxyUrl = 'http://94.237.25.26:8000'
 
 initializeNavigationButtons()
+initializeInfoButton()
 initializeEventStreams()
 initializeForecastTimePanel()
 
@@ -36,6 +37,22 @@ function initializeNavigationButtons() {
     navigationSlider.setValue(navigationSlider.getValue() - adjustment)
   })
   $('#map').on(buttonEvent, '#nextForecast', () => navigationSlider.setValue(navigationSlider.getValue() + HOURS_PER_SLIDER_STEP))
+}
+
+
+function initializeInfoButton() {
+  var infoButton = $(`<button id="infoButton" class="mapControl">i</button>`)
+  map.controls[googleMaps.ControlPosition.LEFT_TOP].push(infoButton.get(0))
+
+  const buttonEvent = modernizr.touchevents ? 'touchend' : 'click'
+  $('#map').on(buttonEvent, '#infoButton', showInfoPopup)
+
+  function showInfoPopup() {
+    $('#popupContainer').css('display', '-webkit-flex')
+    $('#popupContainer').css('display', 'flex')
+    $('#popupContainer #infoPopup').css('display', '-webkit-flex')
+    $('#popupContainer #infoPopup').css('display', 'flex')
+  }
 }
 
 
@@ -81,8 +98,13 @@ function initializeEventStreams() {
       forecastRendering.showPointForecastPopup(forecastItemsE)
     })
 
+  $('#popupContainer a').click(e => e.stopPropagation())  // Prevent link clicks from closing the popup
 
-  $('#popupContainer').click(() => $('#popupContainer').css('display', 'none'))
+  $('#popupContainer').click(() => {
+    $('#popupContainer').css('display', 'none')
+    $('#popupContainer #infoPopup').css('display', 'none')
+    $('#popupContainer #forecastPopup').css('display', 'none')
+  })
 
 
   function sliderChanges(slider) {

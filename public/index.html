@@ -22,7 +22,26 @@
 <div id="map"></div>
 <div id="slider"></div>
 <div id="popupContainer" style="display: none;">
-  <div id="forecastPopup">
+  <div id="infoPopup" class="popup" style="display: none;">
+    <p>tuuleeko.fi shows the latest wind speed forecast for the Finnish Gulf by Finnish Meteorological
+    Institute. Forecast is updated every 6 hours.
+    </p>
+    <p>
+    NOTE! The forecast data are directly from FMI's HIRLAM model and is not reviewed by a professional meteorologist!
+    As such, the data should not be relied on as the primary source for forecasting conditions at sea. Use FMI's
+    official <a href="http://ilmatieteenlaitos.fi/saatiedotus-merenkulkijoille" target="_blank">marine forecast</a> for that.
+    </p>
+    <p>
+    HIRLAM forecast data is licensed by Finnish Meteorological Institute using <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a> license.
+    </p>
+    <p>
+    The used "Background map series" by National Land Survey of Finland is licensed using <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a> license.
+    </p>
+    <p>
+    Contact: <a href="mailto:tuuleeko.yllapito@gmail.com">tuuleeko.yllapito@gmail.com</a>
+    </p>
+  </div>
+  <div id="forecastPopup" class="popup" style="display: none;">
     <div class="forecastHeader">Wind speed (m/s)</div>
     <div class="forecastData"></div>
     <div class="spinner">

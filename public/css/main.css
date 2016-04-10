@@ -10,6 +10,16 @@ body {
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+a {
+    font-style: normal;
+    color: #0099FF;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
 #map {
     width: 100%;
     height: 100%;
@@ -53,6 +63,12 @@ body {
     padding: 0;
 }
 
+#infoButton {
+    width: 40px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
 .navigationButton {
     width: 40px;
     cursor: pointer;
@@ -80,15 +96,11 @@ body {
     position: absolute;
 }
 
-#forecastPopup {
-    width: 280px;
-    height: 280px;
+.popup {
     padding: 15px 10px 20px 10px;
     box-shadow: rgba(0, 0, 0, 0.298039) 0 1px 4px -1px;
     border-radius: 2px;
     background-color: #fff;
-    display: -webkit-flex;
-    display: flex;
     -webkit-align-items: center;
     align-items: center;
     -webkit-justify-content: center;
@@ -96,6 +108,39 @@ body {
     color: #666;
     -webkit-flex-direction: column;
     flex-direction: column;
+    z-index: 100;
+}
+
+#forecastPopup {
+    width: 280px;
+    height: 280px;
+}
+
+#infoPopup {
+    width: 80%;
+    padding: 10px 15px;
+    -webkit-align-items: flex-start;
+    align-items: flex-start;
+    max-height: 90%;
+    overflow: scroll;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+#infoPopup p {
+    margin: 13px 0;
+}
+
+@media (min-width: 550px) {
+    #infoPopup {
+        width: 50%;
+        max-width: 700px;
+        padding: 10px 30px;
+        height: initial;
+        overflow: initial;
+        font-size: 16px;
+        line-height: 24px;
+    }
 }
 
 @media (min-width: 550px) {
