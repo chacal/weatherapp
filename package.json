@@ -18,10 +18,13 @@
     "jquery": "^2.1.4",
     "lodash": "^3.10.1",
     "moment": "^2.10.6",
+    "morgan": "^1.7.0",
     "normalize.css": "^3.0.3",
     "nouislider": "^8.0.2",
     "proj4": "^2.3.10",
     "style-loader": "^0.12.4",
-    "webpack": "^1.12.2"
+    "webpack": "^1.12.2",
+    "winston": "^2.2.0",
+    "winston-daily-rotate-file": "^1.0.1"
   }
 }
