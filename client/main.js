@@ -63,10 +63,11 @@ function initializeEventStreams() {
   // Render wind markers when map bounds change
   boundsChanges
     .flatMapLatest(getForecasts)
-    .filter(forecasts => forecasts.length > 0)
-    .map(forecasts => {
-      const availableForecastItems = forecasts[0].items.length
-      return { forecasts: forecasts, slider: navigationSlider.initialize(availableForecastItems - 1) }
+    .map('.forecastItems')
+    .filter(forecastItems => forecastItems.length > 0)
+    .map(forecastItems => {
+      const availableForecastItems = forecastItems[0].items.length
+      return { forecasts: forecastItems, slider: navigationSlider.initialize(availableForecastItems - 1) }
     })
     .flatMapLatest(forecastAndSlider => {
       return Bacon.once(parseInt(forecastAndSlider.slider.get()))
@@ -94,7 +95,7 @@ function initializeEventStreams() {
     .onValue(latLng => {
       var startTime = encodeURIComponent(moment().format())
       var forecastItemsE = Bacon.fromPromise($.get(`${fmiProxyUrl}/hirlam-forecast?lat=${latLng.lat()}&lon=${latLng.lng()}&startTime=${startTime}`))
-        .map(forecastItems => forecastItems.filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
+        .map(forecast => forecast.forecastItems.filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
       forecastRendering.showPointForecastPopup(forecastItemsE)
     })
 
