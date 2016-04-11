@@ -146,8 +146,15 @@ a:hover {
 
 @media (min-width: 550px) {
     #forecastPopup {
-        width: 500px;
-        height: 300px;
+        width: 550px;
+        height: 250px;
+    }
+}
+
+@media (min-width: 700px) {
+    #forecastPopup {
+        width: 650px;
+        height: 250px;
     }
 }
 #forecastPopup .forecastHeader {
@@ -192,13 +199,24 @@ a:hover {
 
 @media (min-width: 550px) {
     #forecastPopup .forecastData .windDirContainer {
-        width: 96%;
+        width: 95%;
+        margin-right: 3px;
+        padding-top: 5px;
+        padding-bottom: 20px;
     }
 
     #forecastPopup .forecastData .windDirContainer .windDir {
         font-size: 20px;
         width: 12px;
         height: 25px;
+    }
+}
+
+@media (min-width: 700px) {
+    #forecastPopup .forecastData .windDirContainer {
+        width: 96%;
+        margin-right: 14px;
+        padding-top: 10px;
     }
 }
 

@@ -95,7 +95,7 @@ function initializeEventStreams() {
     .onValue(latLng => {
       var startTime = encodeURIComponent(moment().format())
       var forecastItemsE = Bacon.fromPromise($.get(`${fmiProxyUrl}/hirlam-forecast?lat=${latLng.lat()}&lon=${latLng.lng()}&startTime=${startTime}`))
-        .map(forecast => forecast.forecastItems.filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
+        .map(forecast => _.dropWhile(forecast.forecastItems, item => new Date(item.time).getHours() % HOURS_PER_SLIDER_STEP !== 0).filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
       forecastRendering.showPointForecastPopup(forecastItemsE)
     })
 
