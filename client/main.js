@@ -44,8 +44,7 @@ function initializeInfoButton() {
   var infoButton = $(`<button id="infoButton" class="mapControl">i</button>`)
   map.controls[googleMaps.ControlPosition.LEFT_TOP].push(infoButton.get(0))
 
-  const buttonEvent = modernizr.touchevents ? 'touchend' : 'click'
-  $('#map').on(buttonEvent, '#infoButton', showInfoPopup)
+  $('#map').on('click', '#infoButton', showInfoPopup)
 
   function showInfoPopup() {
     $('#popupContainer').css('display', '-webkit-flex')
