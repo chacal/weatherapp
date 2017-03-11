@@ -15,7 +15,7 @@ var currentLocation = {lat: 60, lng: 25}
 
 const map = bgMap.init(currentLocation)
 const navigationSlider = NavigationSlider()
-const fmiProxyUrl = 'http://www.tuuleeko.fi:8000'
+const fmiProxyUrl = 'https://www.tuuleeko.fi/fmiproxy'
 
 initializeNavigationButtons()
 initializeInfoButton()
