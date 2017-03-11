@@ -99,7 +99,7 @@ function getTaustaKarttaTile(coord, zoom) {
   }
   var tileX = normalizedCoord.x
   var tileY = normalizedCoord.y
-  return '//avoindata.maanmittauslaitos.fi/mapcache/wmts?layer=taustakartta&style=default&tilematrixset=ETRS-TM35FIN&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=' + zoom + '&TileCol=' + tileX + '&TileRow=' + tileY
+  return 'http://avoindata.maanmittauslaitos.fi/mapcache/wmts?layer=taustakartta&style=default&tilematrixset=ETRS-TM35FIN&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=' + zoom + '&TileCol=' + tileX + '&TileRow=' + tileY
 
   function getNormalizedCoord(coord, zoom) {
     var y = coord.y
