@@ -112,7 +112,7 @@ function initializeEventStreams() {
   }
 
   function sliderEvents(slider, eventName) {
-    return Bacon.fromEvent(slider, eventName, (formattedValue, handle, rawValue) => rawValue)
+    return Bacon.fromEvent(slider, eventName, (values, handle, unencodedValues) => unencodedValues[handle])
   }
 
   function getForecasts(bounds) {
