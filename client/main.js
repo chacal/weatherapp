@@ -15,8 +15,7 @@ var currentLocation = {lat: 60, lng: 25}
 
 const map = bgMap.init(currentLocation)
 const navigationSlider = NavigationSlider()
-// const fmiProxyUrl = 'https://www.tuuleeko.fi/fmiproxy'
-const fmiProxyUrl = 'http://localhost:8000'
+const fmiProxyUrl = 'https://www.tuuleeko.fi/fmiproxy'
 
 initializeNavigationButtons()
 initializeInfoButton()
@@ -62,12 +61,12 @@ function initializeEventStreams() {
 
   // Render wind markers when map bounds change
   boundsChanges
-    .flatMapLatest(getForecasts)
-    .map('.forecastItems')
-    .filter(forecastItems => forecastItems.length > 0)
-    .map(forecastItems => {
-      const availableForecastItems = forecastItems[0].forecastItems.length
-      return { forecasts: forecastItems, slider: navigationSlider.initialize(availableForecastItems - 1) }
+    .flatMapLatest(getAreaForecast)
+    .map('.pointForecasts')
+    .filter(pointForecasts => pointForecasts.length > 0)
+    .map(pointForecasts => {
+      const availableForecastItems = pointForecasts[0].forecastItems.length
+      return { forecasts: pointForecasts, slider: navigationSlider.initialize(availableForecastItems - 1) }
     })
     .flatMapLatest(forecastAndSlider => {
       return Bacon.once(parseInt(forecastAndSlider.slider.get()))
@@ -95,7 +94,7 @@ function initializeEventStreams() {
     .onValue(latLng => {
       var startTime = encodeURIComponent(moment().format())
       var forecastItemsE = Bacon.fromPromise($.get(`${fmiProxyUrl}/hirlam-forecast?lat=${latLng.lat()}&lon=${latLng.lng()}&startTime=${startTime}`))
-        .map(forecast => _.dropWhile(forecast.forecastItems, item => new Date(item.time).getHours() % HOURS_PER_SLIDER_STEP !== 0).filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
+        .map(pointForecast => _.dropWhile(pointForecast.forecastItems, item => new Date(item.time).getHours() % HOURS_PER_SLIDER_STEP !== 0).filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
       forecastRendering.showPointForecastPopup(forecastItemsE)
     })
 
@@ -116,7 +115,7 @@ function initializeEventStreams() {
     return Bacon.fromEvent(slider, eventName, (values, handle, unencodedValues) => Math.round(unencodedValues[handle]))
   }
 
-  function getForecasts(bounds) {
+  function getAreaForecast(bounds) {
     var boundsParam = [bounds.getSouthWest().lat(), bounds.getSouthWest().lng(), bounds.getNorthEast().lat(), bounds.getNorthEast().lng()].join(',')
     var startTime = encodeURIComponent(moment().format())
     return Bacon.fromPromise($.get(`${fmiProxyUrl}/hirlam-forecast?bounds=${boundsParam}&startTime=${startTime}`))
