@@ -10,7 +10,7 @@ var markers = []
 module.exports = function(map) {
 
   function renderSelectedForecastItems(forecasts, forecastItemIndex) {
-    forecasts.forEach(forecast => drawWindMarkerIfNotAlreadyShown({lat: forecast.lat, lng: forecast.lng}, forecast.items[forecastItemIndex]))
+    forecasts.forEach(forecast => drawWindMarkerIfNotAlreadyShown({lat: forecast.lat, lng: forecast.lng}, forecast.forecastItems[forecastItemIndex]))
   }
 
   function drawWindMarkerIfNotAlreadyShown(location, forecastItem) {

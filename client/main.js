@@ -15,7 +15,8 @@ var currentLocation = {lat: 60, lng: 25}
 
 const map = bgMap.init(currentLocation)
 const navigationSlider = NavigationSlider()
-const fmiProxyUrl = 'https://www.tuuleeko.fi/fmiproxy'
+// const fmiProxyUrl = 'https://www.tuuleeko.fi/fmiproxy'
+const fmiProxyUrl = 'http://localhost:8000'
 
 initializeNavigationButtons()
 initializeInfoButton()
@@ -65,7 +66,7 @@ function initializeEventStreams() {
     .map('.forecastItems')
     .filter(forecastItems => forecastItems.length > 0)
     .map(forecastItems => {
-      const availableForecastItems = forecastItems[0].items.length
+      const availableForecastItems = forecastItems[0].forecastItems.length
       return { forecasts: forecastItems, slider: navigationSlider.initialize(availableForecastItems - 1) }
     })
     .flatMapLatest(forecastAndSlider => {
@@ -122,7 +123,7 @@ function initializeEventStreams() {
   }
 
   function updateForecastTime(forecasts, forecastItemIndex) {
-    $('#renderedTime').empty().append(moment(forecasts[0].items[forecastItemIndex].time).format("ddd HH:mm"))
+    $('#renderedTime').empty().append(moment(forecasts[0].forecastItems[forecastItemIndex].time).format("ddd HH:mm"))
   }
 }
 
