@@ -1,3 +1,5 @@
+const {CheckerPlugin} = require('awesome-typescript-loader')
+
 module.exports = {
   entry: './client/main.js',
   output: {
@@ -5,24 +7,33 @@ module.exports = {
     publicPath: "/js/",
     filename: 'bundle.js'
   },
+  devtool: 'source-map',
+  resolve: {
+    extensions: [".ts", ".js"]
+  },
   module: {
     rules: [
       {
         test: /\.js$/,
+        enforce: 'pre',
+        loader: "source-map-loader"
+      },
+      {
+        test: /\.tsx?$/,
         exclude: [/node_modules/],
-        use: [{
-          loader: 'babel-loader',
-          options: { presets: ['es2015'] }
-        }],
+        loader: 'awesome-typescript-loader'
       },
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
-      },
+      }
     ]
   },
-  externals: [ 'google' ],
+  externals: ['google'],
   devServer: {
     contentBase: __dirname + '/public'
-  }
+  },
+  plugins: [
+    new CheckerPlugin()
+  ]
 }

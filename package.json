@@ -6,9 +6,7 @@
     "start": "node server/app.js"
   },
   "dependencies": {
-    "babel-core": "^6.24.0",
-    "babel-loader": "^6.4.1",
-    "babel-preset-es2015": "^6.24.0",
+    "awesome-typescript-loader": "^3.1.2",
     "baconjs": "^0.7.75",
     "chart.js": "^1.0.2",
     "compression": "^1.6.0",
@@ -22,7 +20,9 @@
     "normalize.css": "^5.0.0",
     "nouislider": "^9.2.0",
     "proj4": "^2.3.10",
+    "source-map-loader": "^0.2.0",
     "style-loader": "^0.14.1",
+    "typescript": "^2.2.1",
     "webpack": "^2.2.1",
     "webpack-dev-server": "^2.4.2",
     "winston": "^2.2.0",
