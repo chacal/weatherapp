@@ -1,4 +1,4 @@
-var proj4 = require('proj4')
+var proj4 = require('proj4').default
 var googleMaps = require('google').maps
 var $ = require('jquery')
 

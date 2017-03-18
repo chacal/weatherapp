@@ -1,20 +1,28 @@
-require('es6-promise').polyfill()  // Needed for older Node.js versions
-
 module.exports = {
   entry: './client/main.js',
   output: {
     path: __dirname + '/public/js',
+    publicPath: "/js/",
     filename: 'bundle.js'
   },
   module: {
-    loaders: [
-      { test: /\.css$/, loader: 'style!css' },
+    rules: [
       {
-        test: /\.jsx?$/,
-        exclude: /(node_modules|bower_components)/,
-        loader: 'babel'
-      }
+        test: /\.js$/,
+        exclude: [/node_modules/],
+        use: [{
+          loader: 'babel-loader',
+          options: { presets: ['es2015'] }
+        }],
+      },
+      {
+        test: /\.css$/,
+        use: ['style-loader', 'css-loader'],
+      },
     ]
   },
-  externals: [ 'google' ]
+  externals: [ 'google' ],
+  devServer: {
+    contentBase: __dirname + '/public'
+  }
 }
