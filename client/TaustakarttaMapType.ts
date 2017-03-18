@@ -1,6 +1,5 @@
 import Proj4Module = require('proj4')
 import $ = require('jquery')
-import _ = require('lodash')
 
 const proj4 = Proj4Module.default
 
@@ -17,7 +16,7 @@ export default class TaustakarttaMapType extends google.maps.ImageMapType {
 
     // <img> tag we want to overlay is added dynamically -> listen for DOM changes and add our overlay only after the <img> has been added
     const observer = new MutationObserver(function(mutations) {
-      if(_.findIndex(mutations, mutation => mutation.addedNodes && mutation.addedNodes.length > 0 && mutation.addedNodes[0].tagName.toUpperCase() === 'IMG') > -1) {
+      if(mutations.findIndex(mutation => mutation.addedNodes && mutation.addedNodes.length > 0 && mutation.addedNodes[0].nodeName.toUpperCase() === 'IMG') > -1) {
         $(tile).append('<div class="imageOverlay">')
         this.disconnect()
       }
