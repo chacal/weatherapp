@@ -38,17 +38,8 @@ export default class TaustakarttaMapType extends google.maps.ImageMapType {
     function getNormalizedCoord(coord: google.maps.Point, zoom: number): google.maps.Point {
       const tileRange = 1 << zoom
 
-      // don't repeat across y-axis (vertically)
-      if (coord.y < 0 || coord.y >= tileRange) {
-        return null
-      }
-
-      // repeat across x-axis
-      if (coord.x < 0 || coord.x >= tileRange) {
-        return null
-      }
-
-      return coord
+      // don't repeat across axis
+      return (coord.y < 0 || coord.y >= tileRange || coord.x < 0 || coord.x >= tileRange) ? null : coord
     }
   }
 }
