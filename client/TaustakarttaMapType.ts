@@ -26,6 +26,35 @@ export default class TaustakarttaMapType extends google.maps.ImageMapType {
 
     return tile
   }
+
+  static getTaustaKarttaTile(coord: google.maps.Point, zoom: number): string {
+    var normalizedCoord = getNormalizedCoord(coord, zoom)
+    if (!normalizedCoord) {
+      return null
+    }
+    var tileX = normalizedCoord.x
+    var tileY = normalizedCoord.y
+    return 'http://avoindata.maanmittauslaitos.fi/mapcache/wmts?layer=taustakartta&style=default&tilematrixset=ETRS-TM35FIN&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=' + zoom + '&TileCol=' + tileX + '&TileRow=' + tileY
+
+    function getNormalizedCoord(coord, zoom) {
+      var y = coord.y
+      var x = coord.x
+
+      var tileRange = 1 << zoom
+
+      // don't repeat across y-axis (vertically)
+      if (y < 0 || y >= tileRange) {
+        return null
+      }
+
+      // repeat across x-axis
+      if (x < 0 || x >= tileRange) {
+        return null
+      }
+
+      return {x: x, y: y}
+    }
+  }
 }
 
 
