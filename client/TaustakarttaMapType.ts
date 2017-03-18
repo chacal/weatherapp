@@ -28,31 +28,28 @@ export default class TaustakarttaMapType extends google.maps.ImageMapType {
   }
 
   static getTaustaKarttaTile(coord: google.maps.Point, zoom: number): string {
-    var normalizedCoord = getNormalizedCoord(coord, zoom)
+    const normalizedCoord = getNormalizedCoord(coord, zoom)
     if (!normalizedCoord) {
       return null
     }
-    var tileX = normalizedCoord.x
-    var tileY = normalizedCoord.y
+    const tileX = normalizedCoord.x
+    const tileY = normalizedCoord.y
     return 'http://avoindata.maanmittauslaitos.fi/mapcache/wmts?layer=taustakartta&style=default&tilematrixset=ETRS-TM35FIN&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=' + zoom + '&TileCol=' + tileX + '&TileRow=' + tileY
 
-    function getNormalizedCoord(coord, zoom) {
-      var y = coord.y
-      var x = coord.x
-
-      var tileRange = 1 << zoom
+    function getNormalizedCoord(coord: google.maps.Point, zoom: number): google.maps.Point {
+      const tileRange = 1 << zoom
 
       // don't repeat across y-axis (vertically)
-      if (y < 0 || y >= tileRange) {
+      if (coord.y < 0 || coord.y >= tileRange) {
         return null
       }
 
       // repeat across x-axis
-      if (x < 0 || x >= tileRange) {
+      if (coord.x < 0 || coord.x >= tileRange) {
         return null
       }
 
-      return {x: x, y: y}
+      return coord
     }
   }
 }
@@ -71,30 +68,30 @@ export default class TaustakarttaMapType extends google.maps.ImageMapType {
  <ows:UpperCorner>1548576.000000 8388608.000000</ows:UpperCorner>
  */
 function getTaustakarttaProjection(): google.maps.Projection {
-  var mapSizeInEpsg3067 = 2097152
-  var mapSizeInGoogle = 256
-  var mapXOffsetFromEpsg3067Origin = -548576
-  var mapYOffsetFromEpsg3067Origin = 6291456
+  const mapSizeInEpsg3067 = 2097152
+  const mapSizeInGoogle = 256
+  const mapXOffsetFromEpsg3067Origin = -548576
+  const mapYOffsetFromEpsg3067Origin = 6291456
 
   return {
     fromLatLngToPoint: function(latLng: google.maps.LatLng): google.maps.Point {
-      var projected = proj4('EPSG:3067', [latLng.lng(), latLng.lat()])
-      var epsgLng = projected[0]
-      var epsgLat = projected[1]
+      const projected: number[] = proj4('EPSG:3067', [latLng.lng(), latLng.lat()])
+      const epsgLng = projected[0]
+      const epsgLat = projected[1]
 
-      var scaledLng = (epsgLng - mapXOffsetFromEpsg3067Origin) / mapSizeInEpsg3067 * mapSizeInGoogle
-      var scaledLat = mapSizeInGoogle - (epsgLat - mapYOffsetFromEpsg3067Origin) / mapSizeInEpsg3067 * mapSizeInGoogle
+      const scaledLng = (epsgLng - mapXOffsetFromEpsg3067Origin) / mapSizeInEpsg3067 * mapSizeInGoogle
+      const scaledLat = mapSizeInGoogle - (epsgLat - mapYOffsetFromEpsg3067Origin) / mapSizeInEpsg3067 * mapSizeInGoogle
       //console.log("From latLng to point:", latLng.lng(), latLng.lat(), scaledLng, scaledLat)
       return new google.maps.Point(scaledLng, scaledLat)
     },
     fromPointToLatLng: function(point: google.maps.Point, noWrap: boolean): google.maps.LatLng {
-      var scaledLng = point.x
-      var scaledLat = point.y
+      const scaledLng = point.x
+      const scaledLat = point.y
 
-      var epsgLng = scaledLng / mapSizeInGoogle * mapSizeInEpsg3067 + mapXOffsetFromEpsg3067Origin
-      var epsgLat = (mapSizeInGoogle - scaledLat) / mapSizeInGoogle * mapSizeInEpsg3067 + mapYOffsetFromEpsg3067Origin
+      const epsgLng = scaledLng / mapSizeInGoogle * mapSizeInEpsg3067 + mapXOffsetFromEpsg3067Origin
+      const epsgLat = (mapSizeInGoogle - scaledLat) / mapSizeInGoogle * mapSizeInEpsg3067 + mapYOffsetFromEpsg3067Origin
 
-      var projected = proj4('EPSG:3067', 'EPSG:4326', [epsgLng, epsgLat])
+      const projected: number[] = proj4('EPSG:3067', 'EPSG:4326', [epsgLng, epsgLat])
       //console.log("From point to latLng:", point.x, point.y, projected[0], projected[1])
       return new google.maps.LatLng(projected[1], projected[0], noWrap)
     }
