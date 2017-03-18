@@ -6,6 +6,7 @@
     "start": "node server/app.js"
   },
   "dependencies": {
+    "@types/node": "^7.0.8",
     "awesome-typescript-loader": "^3.1.2",
     "baconjs": "^0.7.75",
     "chart.js": "^1.0.2",

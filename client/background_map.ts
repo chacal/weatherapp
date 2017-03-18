@@ -1,6 +1,10 @@
-var proj4 = require('proj4').default
-var googleMaps = require('google').maps
-var $ = require('jquery')
+import Proj4Module = require('proj4')
+import Google = require('google')
+import $ = require('jquery')
+import _ = require('lodash')
+
+const proj4 = Proj4Module.default
+const googleMaps = Google.maps
 
 // Register ETRS89 / ETRS-TM35FIN / EPSG:3067 projection to proj4
 proj4.defs("EPSG:3067","+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
@@ -13,7 +17,7 @@ function initMap(location) {
     mapTypeControl: false,
     scaleControl: true,
     zoomControl: true,
-    zoomControlOptions: { position: google.maps.ControlPosition.RIGHT_TOP },
+    zoomControlOptions: { position: googleMaps.ControlPosition.RIGHT_TOP },
     backgroundColor: 'none',
     draggableCursor: 'pointer'
   })

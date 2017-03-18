@@ -1,5 +1,5 @@
 var modernizr = require('exports-loader?window.Modernizr!./modernizr-custom')
-var bgMap = require('./background_map.js')
+var bgMap = require('./background_map')
 var googleMaps = require('google').maps
 var Bacon = require('baconjs')
 var $ = require('jquery')
