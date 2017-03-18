@@ -21,7 +21,29 @@ module.exports = {
       {
         test: /\.tsx?$/,
         exclude: [/node_modules/],
-        loader: 'awesome-typescript-loader'
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['es2015']
+            }
+          },
+          {
+            loader: 'awesome-typescript-loader'
+          }
+        ]
+      },
+      {
+        test: /\.jsx?$/,
+        exclude: [/node_modules/],
+        use: [
+          {
+            loader: 'babel-loader',
+            options: {
+              presets: ['es2015']
+            }
+          }
+        ]
       },
       {
         test: /\.css$/,
