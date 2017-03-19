@@ -1,5 +1,4 @@
 var modernizr = require('exports-loader?window.Modernizr!./modernizr-custom')
-var bgMap = require('./background_map')
 var googleMaps = require('google').maps
 var Bacon = require('baconjs')
 var $ = require('jquery')
@@ -7,6 +6,7 @@ var moment = require('moment')
 var _ = require('lodash')
 
 import NavigationSlider from './NavigationSlider'
+import initBgMap from './background_map'
 
 require('normalize.css')
 require('../node_modules/nouislider/distribute/nouislider.min.css')
@@ -17,7 +17,7 @@ import ForecastRendering from './ForecastRendering'
 const HOURS_PER_SLIDER_STEP = 3
 var currentLocation = {lat: 60, lng: 25}
 
-const map = bgMap.init(currentLocation)
+const map = initBgMap(currentLocation)
 const navigationSlider = new NavigationSlider('slider', HOURS_PER_SLIDER_STEP)
 const fmiProxyUrl = 'https://www.tuuleeko.fi/fmiproxy'
 

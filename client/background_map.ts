@@ -2,7 +2,7 @@ import {Coords} from "./ForecastDomain"
 import TaustakarttaMapType from "./TaustakarttaMapType"
 
 
-export function initMap(location: Coords): google.maps.Map {
+export default function initMap(location: Coords): google.maps.Map {
   const map = new google.maps.Map(document.getElementById('map'), {
     center: location,
     zoom: 5,
@@ -26,9 +26,4 @@ export function initMap(location: Coords): google.maps.Map {
   map.mapTypes.set('taustakartta', customMapType)
   map.setMapTypeId('taustakartta')
   return map
-}
-
-
-module.exports = {
-  init: initMap
 }
