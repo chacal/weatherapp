@@ -18,11 +18,11 @@ export interface ForecastItem {
   time: Date
 }
 
-export class WindMarker {
+export class ForecastMarker {
   constructor(public location: Coords, public forecastItem: ForecastItem, public mapMarker: google.maps.Marker) {}
 
-  static hasSameLocation = (location: Coords) => (marker: WindMarker) => R.equals(marker.location, location)
-  static hasSameItem = (item: ForecastItem) => (marker: WindMarker) => R.equals(marker.forecastItem, item)
+  static hasSameLocation = (location: Coords) => (marker: ForecastMarker) => R.equals(marker.location, location)
+  static hasSameItem = (item: ForecastItem) => (marker: ForecastMarker) => R.equals(marker.forecastItem, item)
 
   static drawGoogleMapsMarker(map: google.maps.Map, location: Coords, forecastItem: ForecastItem): google.maps.Marker {
     return new google.maps.Marker({
@@ -30,12 +30,12 @@ export class WindMarker {
       map: map,
       icon: {
         anchor: new google.maps.Point(50, 50),
-        url: 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(getWindMarkerSVG(forecastItem.windSpeedMs, forecastItem.windDir))
+        url: 'data:image/svg+xml;charset=UTF-8;base64,' + btoa(getMarkerSVG(forecastItem.windSpeedMs, forecastItem.windDir))
       },
       clickable: false
     })
 
-    function getWindMarkerSVG(windSpeed: number, windDir: number): string {
+    function getMarkerSVG(windSpeed: number, windDir: number): string {
       const windSpeedInt = Math.round(windSpeed)
       const oppositeWindDir = windDir - 180
       const markerColor = getMarkerColor(windSpeedInt)

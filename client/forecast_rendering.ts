@@ -5,10 +5,10 @@ import $ = require('jquery')
 import R = require('ramda')
 import L = require('partial.lenses')
 
-import {PointForecast, Coords, ForecastItem, WindMarker} from "./ForecastDomain"
+import {PointForecast, Coords, ForecastItem, ForecastMarker} from "./ForecastDomain"
 
 
-let markers: WindMarker[] = []
+let markers: ForecastMarker[] = []
 
 export namespace ForecastRendering {
 
@@ -20,24 +20,24 @@ export namespace ForecastRendering {
     }
 
     function renderSelectedForecastItems(forecasts: PointForecast[], forecastItemIndex: number) {
-      forecasts.forEach(forecast => drawWindMarkerIfNotAlreadyShown({lat: forecast.lat, lng: forecast.lng}, forecast.forecastItems[forecastItemIndex]))
+      forecasts.forEach(forecast => drawForecastMarkerIfNotAlreadyShown({lat: forecast.lat, lng: forecast.lng}, forecast.forecastItems[forecastItemIndex]))
     }
 
-    function drawWindMarkerIfNotAlreadyShown(location: Coords, forecastItem: ForecastItem) {
+    function drawForecastMarkerIfNotAlreadyShown(location: Coords, forecastItem: ForecastItem) {
       if(! sameMarkerAlreadyDrawn()) {
-        const googleMapsMarker = WindMarker.drawGoogleMapsMarker(map, location, forecastItem)
+        const googleMapsMarker = ForecastMarker.drawGoogleMapsMarker(map, location, forecastItem)
         setTimeout(() => {
-          markers = L.modify(L.find(WindMarker.hasSameLocation(location)), replaceMarker, markers)
+          markers = L.modify(L.find(ForecastMarker.hasSameLocation(location)), replaceMarker, markers)
 
-          function replaceMarker(old: WindMarker) {
+          function replaceMarker(old: ForecastMarker) {
             if(old) { old.mapMarker.setMap(null) }
-            return new WindMarker(location, forecastItem, googleMapsMarker)
+            return new ForecastMarker(location, forecastItem, googleMapsMarker)
           }
         }, 200)
       }
 
       function sameMarkerAlreadyDrawn(): boolean {
-        return R.find(R.both(WindMarker.hasSameLocation(location), WindMarker.hasSameItem(forecastItem)), markers) !== undefined
+        return R.find(R.both(ForecastMarker.hasSameLocation(location), ForecastMarker.hasSameItem(forecastItem)), markers) !== undefined
       }
     }
 
