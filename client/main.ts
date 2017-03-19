@@ -12,7 +12,7 @@ require('normalize.css')
 require('../node_modules/nouislider/distribute/nouislider.min.css')
 require('../public/css/main.css')
 
-import ForecastRendering from './forecast_rendering'
+import ForecastRendering from './ForecastRendering'
 
 const HOURS_PER_SLIDER_STEP = 3
 var currentLocation = {lat: 60, lng: 25}
