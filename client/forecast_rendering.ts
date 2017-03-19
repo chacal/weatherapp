@@ -56,12 +56,12 @@ export namespace ForecastRendering {
         const $forecastChart = $('<canvas class="forecastChart">')
         $('#forecastPopup .forecastData').append($forecastChart)
 
-        var ctx = $forecastChart.get(0).getContext("2d")
-        var windSpeeds = forecastItems.map(item => item.windSpeedMs)
-        var windDirs = forecastItems.map(item => item.windDir)
-        var labels = forecastItems.map(item => moment(item.time).format("HH:mm"))
+        const ctx = $forecastChart.get(0).getContext("2d")
+        const windSpeeds = forecastItems.map(item => item.windSpeedMs)
+        const windDirs = forecastItems.map(item => item.windDir)
+        const labels = forecastItems.map(item => moment(item.time).format("HH:mm"))
 
-        var data = {
+        const data = {
           labels: labels,
           datasets: [{
             fillColor: "rgba(0,153,255,0.2)",
