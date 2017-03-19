@@ -10,6 +10,8 @@ require('normalize.css')
 require('../node_modules/nouislider/distribute/nouislider.min.css')
 require('../public/css/main.css')
 
+import { ForecastRendering } from './forecast_rendering'
+
 var HOURS_PER_SLIDER_STEP = 3
 var currentLocation = {lat: 60, lng: 25}
 
@@ -56,7 +58,7 @@ function initializeInfoButton() {
 
 
 function initializeEventStreams() {
-  const forecastRendering = require('./forecast_rendering')(map)
+  const forecastRendering = ForecastRendering.initialize(map)
   const boundsChanges = Bacon.fromEvent(map, 'idle', () => map.getBounds())
 
   // Render wind markers when map bounds change

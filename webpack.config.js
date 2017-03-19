@@ -1,7 +1,7 @@
 const {CheckerPlugin} = require('awesome-typescript-loader')
 
 module.exports = {
-  entry: './client/main.js',
+  entry: './client/main.ts',
   output: {
     path: __dirname + '/public/js',
     publicPath: "/js/",
