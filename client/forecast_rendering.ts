@@ -3,10 +3,10 @@ import _ = require('lodash')
 import ChartJs = require('chart.js')
 import $ = require('jquery')
 
-import {PointForecast, Coords, ForecastItem} from "./ForecastDomain"
+import {PointForecast, Coords, ForecastItem, WindMarker} from "./ForecastDomain"
 
 
-let markers = []
+let markers: WindMarker[] = []
 
 export namespace ForecastRendering {
 
@@ -26,18 +26,18 @@ export namespace ForecastRendering {
         var marker = drawWindMarker(location, forecastItem)
         setTimeout(() => {
           removeMarkerFromLocation(location)
-          markers.push({ location: location, forecastItem: forecastItem, marker: marker })
+          markers.push(new WindMarker(location, forecastItem, marker))
         }, 200)
       }
 
       function sameMarkerAlreadyDrawn(): boolean {
-        return markers.find(marker => _.isEqual(marker.location, location) && _.isEqual(marker.forecastItem, forecastItem))
+        return markers.findIndex(marker => _.isEqual(marker.location, location) && _.isEqual(marker.forecastItem, forecastItem)) > -1
       }
 
       function removeMarkerFromLocation(location) {
         const toBeDeleted = markers.find(marker => _.isEqual(marker.location, location))
         if(toBeDeleted) {
-          toBeDeleted.marker.setMap(null)
+          toBeDeleted.mapMarker.setMap(null)
           _.pull(markers, toBeDeleted)
         }
       }

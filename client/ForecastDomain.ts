@@ -15,3 +15,7 @@ export interface ForecastItem {
   pressureMbar: number,
   time: Date
 }
+
+export class WindMarker {
+  constructor(public location: Coords, public forecastItem: ForecastItem, public mapMarker: google.maps.Marker) {}
+}
