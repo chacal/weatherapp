@@ -5,14 +5,16 @@ var Bacon = require('baconjs')
 var $ = require('jquery')
 var moment = require('moment')
 var _ = require('lodash')
-var noUiSlider = require('nouislider')
+
+import noUiSlider = require('nouislider')
+
 require('normalize.css')
 require('../node_modules/nouislider/distribute/nouislider.min.css')
 require('../public/css/main.css')
 
 import { ForecastRendering } from './forecast_rendering'
 
-var HOURS_PER_SLIDER_STEP = 3
+const HOURS_PER_SLIDER_STEP = 3
 var currentLocation = {lat: 60, lng: 25}
 
 const map = bgMap.init(currentLocation)
@@ -114,7 +116,7 @@ function initializeEventStreams() {
   }
 
   function sliderEvents(slider, eventName) {
-    return Bacon.fromEvent(slider, eventName, (values, handle, unencodedValues) => Math.round(unencodedValues[handle]))
+    return Bacon.fromEvent(slider, eventName, (values, handle) => values[handle])
   }
 
   function getAreaForecast(bounds) {
@@ -138,7 +140,7 @@ function initializeForecastTimePanel() {
   Navigation Slider
  */
 function NavigationSlider() {
-  const sliderElem = document.getElementById('slider')
+  const sliderElem = document.getElementById('slider') as noUiSlider.Instance
 
   function initializeSlider(maxValue) {
     const oldSliderValue = getSliderValue()
@@ -148,20 +150,24 @@ function NavigationSlider() {
 
     noUiSlider.create(sliderElem, {
       start: oldSliderValue || 0,
-      connect: 'lower',
+      connect: [true, false],
       animate: false,
       range: {
         min: 0,
         max: maxValue
       },
-      step: HOURS_PER_SLIDER_STEP
+      step: HOURS_PER_SLIDER_STEP,
+      format: {
+        to: value => Math.round(value),
+        from: value => Math.round(value)
+      }
     })
 
     return sliderElem.noUiSlider
   }
 
-  function getSliderValue() { return sliderElem.noUiSlider ? parseInt(sliderElem.noUiSlider.get()) : undefined }
-  function setSliderValue(newValue) { sliderElem.noUiSlider.set(newValue) }
+  function getSliderValue(): number { return sliderElem.noUiSlider ? sliderElem.noUiSlider.get() as number : undefined }
+  function setSliderValue(newValue: number) { sliderElem.noUiSlider.set(newValue) }
   function destroySlider() { sliderElem.noUiSlider.destroy() }
 
   return {
