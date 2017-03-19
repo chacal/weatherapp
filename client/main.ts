@@ -6,7 +6,7 @@ var moment = require('moment')
 var _ = require('lodash')
 
 import NavigationSlider from './NavigationSlider'
-import initBgMap from './background_map'
+import initBgMap from './BackgroundMap'
 
 require('normalize.css')
 require('../node_modules/nouislider/distribute/nouislider.min.css')
