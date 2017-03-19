@@ -3,6 +3,8 @@ import _ = require('lodash')
 import ChartJs = require('chart.js')
 import $ = require('jquery')
 
+import {PointForecast, Coords, ForecastItem} from "./ForecastDomain"
+
 
 let markers = []
 
@@ -15,11 +17,11 @@ export namespace ForecastRendering {
       showPointForecastPopup: showPointForecastPopup
     }
 
-    function renderSelectedForecastItems(forecasts, forecastItemIndex) {
+    function renderSelectedForecastItems(forecasts: PointForecast[], forecastItemIndex: number) {
       forecasts.forEach(forecast => drawWindMarkerIfNotAlreadyShown({lat: forecast.lat, lng: forecast.lng}, forecast.forecastItems[forecastItemIndex]))
     }
 
-    function drawWindMarkerIfNotAlreadyShown(location, forecastItem) {
+    function drawWindMarkerIfNotAlreadyShown(location: Coords, forecastItem: ForecastItem) {
       if(! sameMarkerAlreadyDrawn()) {
         var marker = drawWindMarker(location, forecastItem)
         setTimeout(() => {
@@ -28,8 +30,8 @@ export namespace ForecastRendering {
         }, 200)
       }
 
-      function sameMarkerAlreadyDrawn() {
-        return _.find(markers, marker => _.isEqual(marker.location, location) && _.isEqual(marker.forecastItem, forecastItem))
+      function sameMarkerAlreadyDrawn(): boolean {
+        return markers.find(marker => _.isEqual(marker.location, location) && _.isEqual(marker.forecastItem, forecastItem))
       }
 
       function removeMarkerFromLocation(location) {
@@ -41,7 +43,7 @@ export namespace ForecastRendering {
       }
     }
 
-    function drawWindMarker(location, forecastItem) {
+    function drawWindMarker(location: Coords, forecastItem: ForecastItem): google.maps.Marker {
       return new google.maps.Marker({
         position: location,
         map: map,
@@ -52,7 +54,7 @@ export namespace ForecastRendering {
         clickable: false
       })
 
-      function getWindMarkerSVG(windSpeed, windDir) {
+      function getWindMarkerSVG(windSpeed: number, windDir: number): string {
         const windSpeedInt = Math.trunc(windSpeed)
         const oppositeWindDir = windDir - 180
         const markerColor = getMarkerColor(windSpeedInt)
@@ -69,7 +71,7 @@ export namespace ForecastRendering {
     </svg>`
       }
 
-      function getMarkerColor(windSpeed) {
+      function getMarkerColor(windSpeed: number): string {
         if(windSpeed < 4)
           return '#2DC22F'
         else if(windSpeed < 7)
