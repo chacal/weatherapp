@@ -58,15 +58,15 @@ export namespace ForecastRendering {
         const markerColor = getMarkerColor(windSpeedInt)
 
         return `<?xml version="1.0"?>
-      <svg width="100px" height="100px" version="1.1" xmlns="http://www.w3.org/2000/svg">
-      <g transform="scale(0.8)">
-        <path d="M 50 60 m -10 -30 l 10 -20 10 20 z" fill="${markerColor}" stroke="none" transform="rotate(${oppositeWindDir} 50 50)"/>
-        <circle stroke="${markerColor}" fill="#fff" cx="50" cy="50" r="16" stroke-width="3"/>
-        <g font-family="Open Sans, Verdana, sans serif" font-size="20" fill="#000">
-          <text x="50" y="57" font-weight="bold" text-anchor="middle">${windSpeedInt}</text>
-        </g>
-      </g>
-    </svg>`
+            <svg width="100px" height="100px" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <g transform="scale(0.8)">
+              <path d="M 50 60 m -10 -30 l 10 -20 10 20 z" fill="${markerColor}" stroke="none" transform="rotate(${oppositeWindDir} 50 50)"/>
+              <circle stroke="${markerColor}" fill="#fff" cx="50" cy="50" r="16" stroke-width="3"/>
+              <g font-family="Open Sans, Verdana, sans serif" font-size="20" fill="#000">
+                <text x="50" y="57" font-weight="bold" text-anchor="middle">${windSpeedInt}</text>
+              </g>
+            </g>
+          </svg>`
       }
 
       function getMarkerColor(windSpeed: number): string {
