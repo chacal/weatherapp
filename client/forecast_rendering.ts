@@ -53,7 +53,7 @@ export namespace ForecastRendering {
       })
 
       function getWindMarkerSVG(windSpeed: number, windDir: number): string {
-        const windSpeedInt = Math.trunc(windSpeed)
+        const windSpeedInt = Math.round(windSpeed)
         const oppositeWindDir = windDir - 180
         const markerColor = getMarkerColor(windSpeedInt)
 
