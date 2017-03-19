@@ -37,7 +37,7 @@ export namespace ForecastRendering {
       }
 
       function sameMarkerAlreadyDrawn(): boolean {
-        return R.find(marker => R.equals(marker.location, location) && R.equals(marker.forecastItem, forecastItem), markers) !== undefined
+        return R.find(R.both(WindMarker.hasSameLocation(location), WindMarker.hasSameItem(forecastItem)), markers) !== undefined
       }
     }
 

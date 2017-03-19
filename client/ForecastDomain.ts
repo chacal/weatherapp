@@ -22,4 +22,5 @@ export class WindMarker {
   constructor(public location: Coords, public forecastItem: ForecastItem, public mapMarker: google.maps.Marker) {}
 
   static hasSameLocation = (location: Coords) => (marker: WindMarker) => R.equals(marker.location, location)
+  static hasSameItem = (item: ForecastItem) => (marker: WindMarker) => R.equals(marker.forecastItem, item)
 }
