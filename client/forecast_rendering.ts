@@ -21,23 +21,24 @@ export namespace ForecastRendering {
 
     function renderSelectedForecastItems(forecasts: PointForecast[], forecastItemIndex: number) {
       forecasts.forEach(forecast => drawForecastMarkerIfNotAlreadyShown({lat: forecast.lat, lng: forecast.lng}, forecast.forecastItems[forecastItemIndex]))
-    }
 
-    function drawForecastMarkerIfNotAlreadyShown(location: Coords, forecastItem: ForecastItem) {
-      if(! sameMarkerAlreadyDrawn()) {
-        const googleMapsMarker = ForecastMarker.drawGoogleMapsMarker(map, location, forecastItem)
-        setTimeout(() => {
-          markers = L.modify(L.find(ForecastMarker.hasSameLocation(location)), replaceMarker, markers)
 
-          function replaceMarker(old: ForecastMarker) {
-            if(old) { old.mapMarker.setMap(null) }
-            return new ForecastMarker(location, forecastItem, googleMapsMarker)
-          }
-        }, 200)
-      }
+      function drawForecastMarkerIfNotAlreadyShown(location: Coords, forecastItem: ForecastItem) {
+        if(! sameMarkerAlreadyDrawn()) {
+          const googleMapsMarker = ForecastMarker.drawGoogleMapsMarker(map, location, forecastItem)
+          setTimeout(() => {
+            markers = L.modify(L.find(ForecastMarker.hasSameLocation(location)), replaceMarker, markers)
 
-      function sameMarkerAlreadyDrawn(): boolean {
-        return R.find(R.both(ForecastMarker.hasSameLocation(location), ForecastMarker.hasSameItem(forecastItem)), markers) !== undefined
+            function replaceMarker(old: ForecastMarker) {
+              if(old) { old.mapMarker.setMap(null) }
+              return new ForecastMarker(location, forecastItem, googleMapsMarker)
+            }
+          }, 200)
+        }
+
+        function sameMarkerAlreadyDrawn(): boolean {
+          return R.find(R.both(ForecastMarker.hasSameLocation(location), ForecastMarker.hasSameItem(forecastItem)), markers) !== undefined
+        }
       }
     }
 
