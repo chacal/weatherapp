@@ -1,3 +1,5 @@
+import R = require('ramda')
+
 export interface Coords {
   lat: number,
   lng: number
@@ -18,4 +20,6 @@ export interface ForecastItem {
 
 export class WindMarker {
   constructor(public location: Coords, public forecastItem: ForecastItem, public mapMarker: google.maps.Marker) {}
+
+  static hasSameLocation = (location: Coords) => (marker: WindMarker) => R.equals(marker.location, location)
 }

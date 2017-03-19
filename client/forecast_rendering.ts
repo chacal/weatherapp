@@ -2,6 +2,8 @@ import moment = require('moment')
 import _ = require('lodash')
 import ChartJs = require('chart.js')
 import $ = require('jquery')
+import R = require('ramda')
+import L = require('partial.lenses')
 
 import {PointForecast, Coords, ForecastItem, WindMarker} from "./ForecastDomain"
 
@@ -23,23 +25,19 @@ export namespace ForecastRendering {
 
     function drawWindMarkerIfNotAlreadyShown(location: Coords, forecastItem: ForecastItem) {
       if(! sameMarkerAlreadyDrawn()) {
-        var marker = drawWindMarker(location, forecastItem)
+        const marker = drawWindMarker(location, forecastItem)
         setTimeout(() => {
-          removeMarkerFromLocation(location)
-          markers.push(new WindMarker(location, forecastItem, marker))
+          markers = L.modify(L.find(WindMarker.hasSameLocation(location)), replaceMarker, markers)
+
+          function replaceMarker(old: WindMarker) {
+            if(old) { old.mapMarker.setMap(null) }
+            return new WindMarker(location, forecastItem, marker)
+          }
         }, 200)
       }
 
       function sameMarkerAlreadyDrawn(): boolean {
-        return markers.findIndex(marker => _.isEqual(marker.location, location) && _.isEqual(marker.forecastItem, forecastItem)) > -1
-      }
-
-      function removeMarkerFromLocation(location) {
-        const toBeDeleted = markers.find(marker => _.isEqual(marker.location, location))
-        if(toBeDeleted) {
-          toBeDeleted.mapMarker.setMap(null)
-          _.pull(markers, toBeDeleted)
-        }
+        return R.find(marker => R.equals(marker.location, location) && R.equals(marker.forecastItem, forecastItem), markers) !== undefined
       }
     }
 
