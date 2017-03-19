@@ -6,7 +6,7 @@ var $ = require('jquery')
 var moment = require('moment')
 var _ = require('lodash')
 
-import noUiSlider = require('nouislider')
+import NavigationSlider from './NavigationSlider'
 
 require('normalize.css')
 require('../node_modules/nouislider/distribute/nouislider.min.css')
@@ -18,7 +18,7 @@ const HOURS_PER_SLIDER_STEP = 3
 var currentLocation = {lat: 60, lng: 25}
 
 const map = bgMap.init(currentLocation)
-const navigationSlider = NavigationSlider()
+const navigationSlider = new NavigationSlider('slider', HOURS_PER_SLIDER_STEP)
 const fmiProxyUrl = 'https://www.tuuleeko.fi/fmiproxy'
 
 initializeNavigationButtons()
@@ -133,46 +133,4 @@ function initializeEventStreams() {
 function initializeForecastTimePanel() {
   var $renderedTime = $(`<div id="renderedTime" class="mapControl">-</div>`)
   map.controls[googleMaps.ControlPosition.TOP_CENTER].push($renderedTime.get(0))
-}
-
-
-/*
-  Navigation Slider
- */
-function NavigationSlider() {
-  const sliderElem = document.getElementById('slider') as noUiSlider.Instance
-
-  function initializeSlider(maxValue) {
-    const oldSliderValue = getSliderValue()
-
-    if(oldSliderValue !== undefined)
-      destroySlider()
-
-    noUiSlider.create(sliderElem, {
-      start: oldSliderValue || 0,
-      connect: [true, false],
-      animate: false,
-      range: {
-        min: 0,
-        max: maxValue
-      },
-      step: HOURS_PER_SLIDER_STEP,
-      format: {
-        to: value => Math.round(value),
-        from: value => Math.round(value)
-      }
-    })
-
-    return sliderElem.noUiSlider
-  }
-
-  function getSliderValue(): number { return sliderElem.noUiSlider ? sliderElem.noUiSlider.get() as number : undefined }
-  function setSliderValue(newValue: number) { sliderElem.noUiSlider.set(newValue) }
-  function destroySlider() { sliderElem.noUiSlider.destroy() }
-
-  return {
-    initialize: initializeSlider,
-    getValue: getSliderValue,
-    setValue: setSliderValue
-  }
 }
