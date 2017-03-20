@@ -101,6 +101,10 @@ function initializeEventStreams(): void {
         return Bacon.fromEvent(slider, eventName, (values: number[], handle: number) => values[handle])
       }
     }
+
+    function updateForecastTime(forecasts: PointForecast[], forecastItemIndex: number) {
+      $('#renderedTime').empty().append(moment(forecasts[0].forecastItems[forecastItemIndex].time).format("ddd HH:mm"))
+    }
   }
 
   function showPointForecastOnMapClick() {
@@ -130,10 +134,6 @@ function initializeEventStreams(): void {
       $('#popupContainer #infoPopup').css('display', 'none')
       $('#popupContainer #forecastPopup').css('display', 'none')
     })
-  }
-
-  function updateForecastTime(forecasts: PointForecast[], forecastItemIndex: number) {
-    $('#renderedTime').empty().append(moment(forecasts[0].forecastItems[forecastItemIndex].time).format("ddd HH:mm"))
   }
 }
 
