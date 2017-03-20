@@ -90,7 +90,7 @@ function renderAreaForecastOnMapBoundsChange(): void {
       updateForecastTime(forecasts, sliderValue)
     })
 
-  function sliderChanges(slider: noUiSlider.noUiSlider) {
+  function sliderChanges(slider: noUiSlider.noUiSlider): Bacon.EventStream<any, number> {
     return sliderValues('slide').debounceImmediate(300).merge(sliderValues('set')).skipDuplicates()
 
     function sliderValues(eventName: string): Bacon.EventStream<any, number> {
@@ -104,7 +104,7 @@ function renderAreaForecastOnMapBoundsChange(): void {
 }
 
 
-function showPointForecastOnMapClick() {
+function showPointForecastOnMapClick(): void {
   const mapClicks: Bacon.Property<any, google.maps.MouseEvent> = function() {  // Only for namespacing, called immediately
     const delayedClicks = Bacon.fromEvent(map as any, 'click').delay(200)
     const dblClicks = Bacon.fromEvent(map as any, 'dblclick').map('dblClick')
@@ -132,7 +132,7 @@ function showPointForecastOnMapClick() {
     $('#popupContainer #forecastPopup').css('display', 'none')
   })
 
-  function itemOnFixedSliderHours(item) { return  new Date(item.time).getHours() % HOURS_PER_SLIDER_STEP === 0 }
+  function itemOnFixedSliderHours(item: ForecastItem): boolean { return  new Date(item.time).getHours() % HOURS_PER_SLIDER_STEP === 0 }
 }
 
 
