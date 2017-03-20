@@ -1,6 +1,7 @@
 import Bacon = require('baconjs')
 import $ = require('jquery')
 import moment = require('moment')
+import R = require('ramda')
 
 var modernizr = require('exports-loader?window.Modernizr!./modernizr-custom')
 var _ = require('lodash')
@@ -110,9 +111,9 @@ function showPointForecastOnMapClick() {
     const dblClicks = Bacon.fromEvent(map as any, 'dblclick').map('dblClick')
     return delayedClicks.merge(dblClicks)
       .slidingWindow(2)
-      .filter(events => !_.includes(events, 'dblClick'))  // Click happens only if double click has not happened
-      .map(events => _.last(events))
-      .filter(_.identity)
+      .filter(events => !R.contains('dblClick', events))  // Click happens only if double click has not happened
+      .map(events => R.last(events))
+      .filter(R.identity)
   }()
 
   // Show forecast popup when point on map is clicked
