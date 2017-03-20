@@ -7,10 +7,12 @@ var modernizr = require('exports-loader?window.Modernizr!./modernizr-custom')
 var _ = require('lodash')
 
 import NavigationSlider from './NavigationSlider'
+import FMIProxy from './FMIProxy'
 import initBgMap from './BackgroundMap'
 import ForecastRendering from './ForecastRendering'
-import {AreaForecast, PointForecast, Coords, ForecastItem} from "./ForecastDomain"
 import Property = Bacon.Property
+import {PointForecast, ForecastItem} from "./ForecastDomain"
+
 declare module 'baconjs' {
   function fromEvent<E, A>(target: noUiSlider.noUiSlider, eventName: string, eventTransformer: (t: number[], m: number) => A): Bacon.EventStream<E, A>;
 }
@@ -25,6 +27,8 @@ const fmiProxyUrl = 'https://www.tuuleeko.fi/fmiproxy'
 
 const map = initBgMap(currentLocation)
 const navigationSlider = new NavigationSlider('slider', HOURS_PER_SLIDER_STEP)
+const fmiProxy = new FMIProxy(fmiProxyUrl)
+
 
 initializeNavigationButtons()
 initializeInfoButton()
@@ -75,7 +79,7 @@ function initializeEventStreams(): void {
 
     // Render wind markers when map bounds change
     boundsChanges
-      .flatMapLatest(getAreaForecast)
+      .flatMapLatest(bounds => fmiProxy.getAreaForecast(bounds))
       .map(af => af.pointForecasts)
       .filter(pointForecasts => pointForecasts.length > 0)
       .map(pointForecasts => {
@@ -116,7 +120,7 @@ function initializeEventStreams(): void {
     mapClicks
       .map(e => e.latLng)
       .onValue(latLng => {
-        const forecastItemsE: EventStream<any, ForecastItem[]> = getPointForecast(latLng)
+        const forecastItemsE: EventStream<any, ForecastItem[]> = fmiProxy.getPointForecast(latLng)
           .map(pointForecast => _.dropWhile(pointForecast.forecastItems, item => new Date(item.time).getHours() % HOURS_PER_SLIDER_STEP !== 0).filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
         forecastRendering.showPointForecastPopup(forecastItemsE)
       })
@@ -141,16 +145,3 @@ function initializeForecastTimePanel(): void {
 }
 
 
-//
-// fmiproxy API calls
-//
-function getAreaForecast(bounds: google.maps.LatLngBounds): EventStream<any, AreaForecast> {
-  const boundsParam = [bounds.getSouthWest().lat(), bounds.getSouthWest().lng(), bounds.getNorthEast().lat(), bounds.getNorthEast().lng()].join(',')
-  const startTime = encodeURIComponent(moment().format())
-  return Bacon.fromPromise($.get(`${fmiProxyUrl}/hirlam-forecast?bounds=${boundsParam}&startTime=${startTime}`))
-}
-
-function getPointForecast(coords: google.maps.LatLng): EventStream<any, PointForecast> {
-  const startTime = encodeURIComponent(moment().format())
-  return Bacon.fromPromise($.get(`${fmiProxyUrl}/hirlam-forecast?lat=${coords.lat()}&lon=${coords.lng()}&startTime=${startTime}`))
-}
