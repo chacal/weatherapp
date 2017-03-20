@@ -1,4 +1,3 @@
-import EventStream = Bacon.EventStream
 import Bacon = require('baconjs')
 import $ = require('jquery')
 import moment = require('moment')
@@ -10,7 +9,6 @@ import NavigationSlider from './NavigationSlider'
 import FMIProxy from './FMIProxy'
 import initBgMap from './BackgroundMap'
 import ForecastRendering from './ForecastRendering'
-import Property = Bacon.Property
 import {PointForecast, ForecastItem} from "./ForecastDomain"
 
 declare module 'baconjs' {
@@ -75,7 +73,7 @@ function initializeEventStreams(): void {
 
 
   function renderAreaForecastOnMapBoundsChange(): void {
-    const boundsChanges: EventStream<any, google.maps.LatLngBounds> = Bacon.fromEvent(map as any, 'idle').map(() => map.getBounds())
+    const boundsChanges: Bacon.EventStream<any, google.maps.LatLngBounds> = Bacon.fromEvent(map as any, 'idle').map(() => map.getBounds())
 
     // Render wind markers when map bounds change
     boundsChanges
@@ -99,14 +97,14 @@ function initializeEventStreams(): void {
     function sliderChanges(slider: noUiSlider.noUiSlider) {
       return sliderValues('slide').debounceImmediate(300).merge(sliderValues('set')).skipDuplicates()
 
-      function sliderValues(eventName: string): EventStream<any, number> {
+      function sliderValues(eventName: string): Bacon.EventStream<any, number> {
         return Bacon.fromEvent(slider, eventName, (values: number[], handle: number) => values[handle])
       }
     }
   }
 
   function showPointForecastOnMapClick() {
-    const mapClicks: Property<any, google.maps.MouseEvent> = function() {  // Only for namespacing, called immediately
+    const mapClicks: Bacon.Property<any, google.maps.MouseEvent> = function() {  // Only for namespacing, called immediately
       const delayedClicks = Bacon.fromEvent(map as any, 'click').delay(200)
       const dblClicks = Bacon.fromEvent(map as any, 'dblclick').map('dblClick')
       return delayedClicks.merge(dblClicks)
@@ -120,7 +118,7 @@ function initializeEventStreams(): void {
     mapClicks
       .map(e => e.latLng)
       .onValue(latLng => {
-        const forecastItemsE: EventStream<any, ForecastItem[]> = fmiProxy.getPointForecast(latLng)
+        const forecastItemsE: Bacon.EventStream<any, ForecastItem[]> = fmiProxy.getPointForecast(latLng)
           .map(pointForecast => _.dropWhile(pointForecast.forecastItems, item => new Date(item.time).getHours() % HOURS_PER_SLIDER_STEP !== 0).filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
         forecastRendering.showPointForecastPopup(forecastItemsE)
       })
