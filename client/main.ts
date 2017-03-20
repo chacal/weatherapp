@@ -66,73 +66,68 @@ function initializeInfoButton(): void {
 
 function initializeEventStreams(): void {
   const forecastRendering = new ForecastRendering(map)
-  const boundsChanges: EventStream<any, google.maps.LatLngBounds> = Bacon.fromEvent(map as any, 'idle').map(() => map.getBounds())
-
-  // Render wind markers when map bounds change
-  boundsChanges
-    .flatMapLatest(getAreaForecast)
-    .map(af => af.pointForecasts)
-    .filter(pointForecasts => pointForecasts.length > 0)
-    .map(pointForecasts => {
-      const availableForecastItems = pointForecasts[0].forecastItems.length
-      return { forecasts: pointForecasts, slider: navigationSlider.initialize(availableForecastItems - 1) }
-    })
-    .flatMapLatest(({forecasts, slider}) => {
-      return Bacon.once(slider.get() as number)
-        .merge(sliderChanges(slider))
-        .map(sliderValue => ({ forecasts, sliderValue }))
-    })
-    .onValue(({forecasts, sliderValue}) => {
-      forecastRendering.renderSelectedForecastItems(forecasts, sliderValue)
-      updateForecastTime(forecasts, sliderValue)
-    })
-
-  const mapClicks: Property<any, google.maps.MouseEvent> = function() {  // Only for namespacing, called immediately
-    const delayedClicks = Bacon.fromEvent(map as any, 'click').delay(200)
-    const dblClicks = Bacon.fromEvent(map as any, 'dblclick').map('dblClick')
-    return delayedClicks.merge(dblClicks)
-      .slidingWindow(2)
-      .filter(events => !_.includes(events, 'dblClick'))  // Click happens only if double click has not happened
-      .map(events => _.last(events))
-      .filter(_.identity)
-  }()
-
-  // Show forecast popup when point on map is clicked
-  mapClicks
-    .map(e => e.latLng)
-    .onValue(latLng => {
-      const forecastItemsE: EventStream<any, ForecastItem[]> = getPointForecast(latLng)
-        .map(pointForecast => _.dropWhile(pointForecast.forecastItems, item => new Date(item.time).getHours() % HOURS_PER_SLIDER_STEP !== 0).filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
-      forecastRendering.showPointForecastPopup(forecastItemsE)
-    })
-
-  $('#popupContainer a').click(e => e.stopPropagation())  // Prevent link clicks from closing the popup
-
-  $('#popupContainer').click(() => {
-    $('#popupContainer').css('display', 'none')
-    $('#popupContainer #infoPopup').css('display', 'none')
-    $('#popupContainer #forecastPopup').css('display', 'none')
-  })
+  renderAreaForecastOnMapBoundsChange()
+  showPointForecastOnMapClick()
 
 
-  function sliderChanges(slider: noUiSlider.noUiSlider) {
-    return sliderValues('slide').debounceImmediate(300).merge(sliderValues('set')).skipDuplicates()
+  function renderAreaForecastOnMapBoundsChange(): void {
+    const boundsChanges: EventStream<any, google.maps.LatLngBounds> = Bacon.fromEvent(map as any, 'idle').map(() => map.getBounds())
 
-    function sliderValues(eventName: string): EventStream<any, number> {
-      return Bacon.fromEvent(slider, eventName, (values: number[], handle: number) => values[handle])
+    // Render wind markers when map bounds change
+    boundsChanges
+      .flatMapLatest(getAreaForecast)
+      .map(af => af.pointForecasts)
+      .filter(pointForecasts => pointForecasts.length > 0)
+      .map(pointForecasts => {
+        const availableForecastItems = pointForecasts[0].forecastItems.length
+        return {forecasts: pointForecasts, slider: navigationSlider.initialize(availableForecastItems - 1)}
+      })
+      .flatMapLatest(({forecasts, slider}) => {
+        return Bacon.once(slider.get() as number)
+          .merge(sliderChanges(slider))
+          .map(sliderValue => ({forecasts, sliderValue}))
+      })
+      .onValue(({forecasts, sliderValue}) => {
+        forecastRendering.renderSelectedForecastItems(forecasts, sliderValue)
+        updateForecastTime(forecasts, sliderValue)
+      })
+
+    function sliderChanges(slider: noUiSlider.noUiSlider) {
+      return sliderValues('slide').debounceImmediate(300).merge(sliderValues('set')).skipDuplicates()
+
+      function sliderValues(eventName: string): EventStream<any, number> {
+        return Bacon.fromEvent(slider, eventName, (values: number[], handle: number) => values[handle])
+      }
     }
   }
 
+  function showPointForecastOnMapClick() {
+    const mapClicks: Property<any, google.maps.MouseEvent> = function() {  // Only for namespacing, called immediately
+      const delayedClicks = Bacon.fromEvent(map as any, 'click').delay(200)
+      const dblClicks = Bacon.fromEvent(map as any, 'dblclick').map('dblClick')
+      return delayedClicks.merge(dblClicks)
+        .slidingWindow(2)
+        .filter(events => !_.includes(events, 'dblClick'))  // Click happens only if double click has not happened
+        .map(events => _.last(events))
+        .filter(_.identity)
+    }()
 
-  function getAreaForecast(bounds: google.maps.LatLngBounds): EventStream<any, AreaForecast> {
-    const boundsParam = [bounds.getSouthWest().lat(), bounds.getSouthWest().lng(), bounds.getNorthEast().lat(), bounds.getNorthEast().lng()].join(',')
-    const startTime = encodeURIComponent(moment().format())
-    return Bacon.fromPromise($.get(`${fmiProxyUrl}/hirlam-forecast?bounds=${boundsParam}&startTime=${startTime}`))
-  }
+    // Show forecast popup when point on map is clicked
+    mapClicks
+      .map(e => e.latLng)
+      .onValue(latLng => {
+        const forecastItemsE: EventStream<any, ForecastItem[]> = getPointForecast(latLng)
+          .map(pointForecast => _.dropWhile(pointForecast.forecastItems, item => new Date(item.time).getHours() % HOURS_PER_SLIDER_STEP !== 0).filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
+        forecastRendering.showPointForecastPopup(forecastItemsE)
+      })
 
-  function getPointForecast(coords: google.maps.LatLng): EventStream<any, PointForecast> {
-    const startTime = encodeURIComponent(moment().format())
-    return Bacon.fromPromise($.get(`${fmiProxyUrl}/hirlam-forecast?lat=${coords.lat()}&lon=${coords.lng()}&startTime=${startTime}`))
+    $('#popupContainer a').click(e => e.stopPropagation())  // Prevent link clicks from closing the popup
+
+    $('#popupContainer').click(() => {
+      $('#popupContainer').css('display', 'none')
+      $('#popupContainer #infoPopup').css('display', 'none')
+      $('#popupContainer #forecastPopup').css('display', 'none')
+    })
   }
 
   function updateForecastTime(forecasts: PointForecast[], forecastItemIndex: number) {
@@ -143,4 +138,19 @@ function initializeEventStreams(): void {
 function initializeForecastTimePanel(): void {
   const $renderedTime = $(`<div id="renderedTime" class="mapControl">-</div>`)
   map.controls[google.maps.ControlPosition.TOP_CENTER].push($renderedTime.get(0))
+}
+
+
+//
+// fmiproxy API calls
+//
+function getAreaForecast(bounds: google.maps.LatLngBounds): EventStream<any, AreaForecast> {
+  const boundsParam = [bounds.getSouthWest().lat(), bounds.getSouthWest().lng(), bounds.getNorthEast().lat(), bounds.getNorthEast().lng()].join(',')
+  const startTime = encodeURIComponent(moment().format())
+  return Bacon.fromPromise($.get(`${fmiProxyUrl}/hirlam-forecast?bounds=${boundsParam}&startTime=${startTime}`))
+}
+
+function getPointForecast(coords: google.maps.LatLng): EventStream<any, PointForecast> {
+  const startTime = encodeURIComponent(moment().format())
+  return Bacon.fromPromise($.get(`${fmiProxyUrl}/hirlam-forecast?lat=${coords.lat()}&lon=${coords.lng()}&startTime=${startTime}`))
 }
