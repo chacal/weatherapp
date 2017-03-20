@@ -3,8 +3,6 @@ import $ = require('jquery')
 import moment = require('moment')
 import R = require('ramda')
 
-var modernizr = require('exports-loader?window.Modernizr!./modernizr-custom')
-
 import NavigationSlider from './NavigationSlider'
 import FMIProxy from './FMIProxy'
 import initBgMap from './BackgroundMap'
@@ -15,6 +13,7 @@ declare module 'baconjs' {
   function fromEvent<E, A>(target: noUiSlider.noUiSlider, eventName: string, eventTransformer: (t: number[], m: number) => A): Bacon.EventStream<E, A>;
 }
 
+const modernizr = require('exports-loader?window.Modernizr!./modernizr-custom')
 require('normalize.css')
 require('../node_modules/nouislider/distribute/nouislider.min.css')
 require('../public/css/main.css')
