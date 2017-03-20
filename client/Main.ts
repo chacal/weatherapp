@@ -118,12 +118,11 @@ function showPointForecastOnMapClick() {
   // Show forecast popup when point on map is clicked
   mapClicks
     .map(e => e.latLng)
-    .onValue(latLng => {
-      const forecastItemsE: Bacon.EventStream<any, ForecastItem[]> = fmiProxy.getPointForecast(latLng)
-        .map(pf => pf.forecastItems)
-        .map(forecastItems => forecastItems.filter(itemOnFixedSliderHours))
-      forecastRendering.showPointForecastPopup(forecastItemsE)
-    })
+    .doAction(() => forecastRendering.showPointForecastLoadingPopup())
+    .flatMapLatest(latLng => fmiProxy.getPointForecast(latLng))
+    .map(pf => pf.forecastItems)
+    .map(forecastItems => forecastItems.filter(itemOnFixedSliderHours))
+    .onValue(forecastItems => forecastRendering.showPointForecastPopup(forecastItems))
 
   $('#popupContainer a').click(e => e.stopPropagation())  // Prevent link clicks from closing the popup
 
@@ -141,5 +140,3 @@ function initializeForecastTimePanel(): void {
   const $renderedTime = $(`<div id="renderedTime" class="mapControl">-</div>`)
   map.controls[google.maps.ControlPosition.TOP_CENTER].push($renderedTime.get(0))
 }
-
-

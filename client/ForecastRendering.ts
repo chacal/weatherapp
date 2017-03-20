@@ -38,7 +38,7 @@ export default class ForecastRendering {
     }
   }
 
-  showPointForecastPopup(forecastItemsE: EventStream<any, ForecastItem[]>): void {
+  showPointForecastLoadingPopup(): void {
     $('#popupContainer').css('display', '-webkit-flex')
     $('#popupContainer').css('display', 'flex')
     $('#popupContainer #forecastPopup').css('display', '-webkit-flex')
@@ -46,50 +46,51 @@ export default class ForecastRendering {
     $('#popupContainer .spinner').show()
     $(".forecastData").empty().hide()
     $(".forecastHeader").hide()
-    forecastItemsE.onValue(forecastItems => {
-      $(".forecastData").empty().show()
-      $(".forecastHeader").show()
-      $('#popupContainer .spinner').hide()
-      const $forecastChart = $('<canvas class="forecastChart">')
-      $('#forecastPopup .forecastData').append($forecastChart)
+  }
 
-      const ctx = ($forecastChart.get(0) as HTMLCanvasElement).getContext("2d")
-      const windSpeeds = forecastItems.map(item => item.windSpeedMs)
-      const windDirs = forecastItems.map(item => item.windDir)
-      const labels = forecastItems.map(item => moment(item.time).format("HH:mm"))
+  showPointForecastPopup(forecastItems: ForecastItem[]): void {
+    $(".forecastData").empty().show()
+    $(".forecastHeader").show()
+    $('#popupContainer .spinner').hide()
+    const $forecastChart = $('<canvas class="forecastChart">')
+    $('#forecastPopup .forecastData').append($forecastChart)
 
-      const data = {
-        labels: labels,
-        datasets: [{
-          fillColor: "rgba(0,153,255,0.2)",
-          strokeColor: "rgba(0,153,255,0.9)",
-          data: windSpeeds
-        }]
-      }
+    const ctx = ($forecastChart.get(0) as HTMLCanvasElement).getContext("2d")
+    const windSpeeds = forecastItems.map(item => item.windSpeedMs)
+    const windDirs = forecastItems.map(item => item.windDir)
+    const labels = forecastItems.map(item => moment(item.time).format("HH:mm"))
 
-      const options = {
-        animation: false,
-        showTooltips: false,
-        bezierCurveTension: 0.3,
-        pointDot: false,
-        scaleBeginAtZero: true,
-        responsive: true,
-        maintainAspectRatio: false
-      }
+    const data = {
+      labels: labels,
+      datasets: [{
+        fillColor: "rgba(0,153,255,0.2)",
+        strokeColor: "rgba(0,153,255,0.9)",
+        data: windSpeeds
+      }]
+    }
 
-      new ChartJs(ctx).Line(data, options)
+    const options = {
+      animation: false,
+      showTooltips: false,
+      bezierCurveTension: 0.3,
+      pointDot: false,
+      scaleBeginAtZero: true,
+      responsive: true,
+      maintainAspectRatio: false
+    }
 
-      const $windDirContainer = $('<div class="windDirContainer">')
-      windDirs.forEach(windDir => {
-        $windDirContainer.append($('<span class="windDir">').text('\u2193')
-          .css({
-            '-webkit-transform': 'rotate(' + windDir + 'deg)',
-            'transform': 'rotate(' + windDir + 'deg)'
-          })
-        )
-      })
-      $('.forecastData').append($windDirContainer)
+    new ChartJs(ctx).Line(data, options)
+
+    const $windDirContainer = $('<div class="windDirContainer">')
+    windDirs.forEach(windDir => {
+      $windDirContainer.append($('<span class="windDir">').text('\u2193')
+        .css({
+          '-webkit-transform': 'rotate(' + windDir + 'deg)',
+          'transform': 'rotate(' + windDir + 'deg)'
+        })
+      )
     })
+    $('.forecastData').append($windDirContainer)
   }
 }
 
