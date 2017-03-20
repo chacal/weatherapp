@@ -6,6 +6,7 @@ import R = require('ramda')
 import L = require('partial.lenses')
 
 import {PointForecast, Coords, ForecastItem, ForecastMarker} from "./ForecastDomain"
+import EventStream = Bacon.EventStream
 
 
 export default class ForecastRendering {
@@ -37,8 +38,7 @@ export default class ForecastRendering {
     }
   }
 
-  // TODO: Types
-  showPointForecastPopup(forecastItemsE): void {
+  showPointForecastPopup(forecastItemsE: EventStream<any, ForecastItem[]>): void {
     $('#popupContainer').css('display', '-webkit-flex')
     $('#popupContainer').css('display', 'flex')
     $('#popupContainer #forecastPopup').css('display', '-webkit-flex')
@@ -53,7 +53,7 @@ export default class ForecastRendering {
       const $forecastChart = $('<canvas class="forecastChart">')
       $('#forecastPopup .forecastData').append($forecastChart)
 
-      const ctx = $forecastChart.get(0).getContext("2d")
+      const ctx = ($forecastChart.get(0) as HTMLCanvasElement).getContext("2d")
       const windSpeeds = forecastItems.map(item => item.windSpeedMs)
       const windDirs = forecastItems.map(item => item.windDir)
       const labels = forecastItems.map(item => moment(item.time).format("HH:mm"))

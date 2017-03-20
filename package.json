@@ -6,7 +6,10 @@
     "start": "node server/app.js"
   },
   "dependencies": {
+    "@types/baconjs": "^0.7.31",
     "@types/googlemaps": "^3.26.4",
+    "@types/jquery": "^2.0.41",
+    "@types/moment": "^2.13.0",
     "@types/node": "^7.0.8",
     "@types/nouislider": "^9.0.0",
     "@types/ramda": "0.0.4",

@@ -7,7 +7,7 @@ export default class NavigationSlider {
     this.sliderElem = document.getElementById(domElementId) as noUiSlider.Instance
   }
 
-  initialize(maxValue: number) {
+  initialize(maxValue: number): noUiSlider.noUiSlider {
     const oldSliderValue = this.getValue()
 
     if(oldSliderValue !== undefined)
