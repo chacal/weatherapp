@@ -5,6 +5,11 @@ export interface Coords {
   lng: number
 }
 
+export interface AreaForecast {
+  publishTime: Date,
+  pointForecasts: PointForecast[]
+}
+
 export interface PointForecast extends Coords {
   publishTime: Date,
   forecastItems: ForecastItem[]
