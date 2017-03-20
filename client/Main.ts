@@ -4,7 +4,6 @@ import moment = require('moment')
 import R = require('ramda')
 
 var modernizr = require('exports-loader?window.Modernizr!./modernizr-custom')
-var _ = require('lodash')
 
 import NavigationSlider from './NavigationSlider'
 import FMIProxy from './FMIProxy'
@@ -121,7 +120,8 @@ function showPointForecastOnMapClick() {
     .map(e => e.latLng)
     .onValue(latLng => {
       const forecastItemsE: Bacon.EventStream<any, ForecastItem[]> = fmiProxy.getPointForecast(latLng)
-        .map(pointForecast => _.dropWhile(pointForecast.forecastItems, item => new Date(item.time).getHours() % HOURS_PER_SLIDER_STEP !== 0).filter((item, idx) => idx % HOURS_PER_SLIDER_STEP === 0))
+        .map(pf => pf.forecastItems)
+        .map(forecastItems => forecastItems.filter(itemOnFixedSliderHours))
       forecastRendering.showPointForecastPopup(forecastItemsE)
     })
 
@@ -132,6 +132,8 @@ function showPointForecastOnMapClick() {
     $('#popupContainer #infoPopup').css('display', 'none')
     $('#popupContainer #forecastPopup').css('display', 'none')
   })
+
+  function itemOnFixedSliderHours(item) { return  new Date(item.time).getHours() % HOURS_PER_SLIDER_STEP === 0 }
 }
 
 
