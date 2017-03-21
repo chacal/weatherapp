@@ -1,5 +1,4 @@
 import moment = require('moment')
-import _ = require('lodash')
 import ChartJs = require('chart.js')
 import $ = require('jquery')
 import R = require('ramda')

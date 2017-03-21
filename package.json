@@ -24,7 +24,6 @@
     "exports-loader": "^0.6.4",
     "express": "^4.13.3",
     "jquery": "^3.2.0",
-    "lodash": "^3.10.1",
     "moment": "^2.10.6",
     "morgan": "^1.7.0",
     "normalize.css": "^5.0.0",
