@@ -7,7 +7,7 @@ export default class NavigationSlider {
     this.sliderElem = document.getElementById(domElementId) as noUiSlider.Instance
   }
 
-  initialize(maxValue: number): noUiSlider.noUiSlider {
+  initialize(minValue: number, maxValue: number): noUiSlider.noUiSlider {
     const oldSliderValue = this.getValue()
 
     if(oldSliderValue !== undefined)
@@ -18,7 +18,7 @@ export default class NavigationSlider {
       connect: [true, false],
       animate: false,
       range: {
-        min: 0,
+        min: minValue,
         max: maxValue
       },
       step: this.hoursPerSliderStep,

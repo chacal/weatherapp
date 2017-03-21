@@ -68,22 +68,27 @@ function initializeInfoButton(): void {
 
 
 function renderAreaForecastOnSliderChanges(): void {
-  fmiProxy.getAreaForecast()
+  type ForecastsWithSliderValuesStream = Bacon.EventStream<any, {forecasts: PointForecast[], sliderValue: number}>
+
+  const forecastsWithSliderValues: ForecastsWithSliderValuesStream = fmiProxy.getAreaForecast()
     .map(af => af.pointForecasts)
     .filter(pointForecasts => pointForecasts.length > 0)
     .map(pointForecasts => {
-      const availableForecastItems = pointForecasts[0].forecastItems.length
-      return {forecasts: pointForecasts, slider: navigationSlider.initialize(availableForecastItems - 1)}
+      const indexOfFirstForecastItemAfterCurrentTime = pointForecasts[0].forecastItems.findIndex(item => moment(item.time).isAfter(moment()))
+      const indexOfLastForecastItem = pointForecasts[0].forecastItems.length - 1
+      return {forecasts: pointForecasts, slider: navigationSlider.initialize(indexOfFirstForecastItemAfterCurrentTime, indexOfLastForecastItem)}
     })
     .flatMapLatest(({forecasts, slider}) => {
       return Bacon.once(slider.get() as number)
         .merge(sliderChanges(slider))
         .map(sliderValue => ({forecasts, sliderValue}))
     })
-    .onValue(({forecasts, sliderValue}) => {
-      forecastRendering.renderSelectedForecastItems(forecasts, sliderValue)
-      updateForecastTime(forecasts, sliderValue)
-    })
+
+  forecastsWithSliderValues.onValue(({forecasts, sliderValue}) => {
+    forecastRendering.renderSelectedForecastItems(forecasts, sliderValue)
+    updateForecastTime(forecasts, sliderValue)
+  })
+
 
   function sliderChanges(slider: noUiSlider.noUiSlider): Bacon.EventStream<any, number> {
     return sliderValues('slide').debounceImmediate(300).merge(sliderValues('set')).skipDuplicates()
