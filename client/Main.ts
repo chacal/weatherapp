@@ -31,7 +31,7 @@ const fmiProxy = new FMIProxy(fmiProxyUrl)
 initializeNavigationButtons()
 initializeInfoButton()
 initializeForecastTimePanel()
-renderAreaForecastOnMapBoundsChange()
+renderAreaForecastOnSliderChanges()
 showPointForecastOnMapClick()
 
 
@@ -67,12 +67,8 @@ function initializeInfoButton(): void {
 }
 
 
-function renderAreaForecastOnMapBoundsChange(): void {
-  const boundsChanges: Bacon.EventStream<any, google.maps.LatLngBounds> = Bacon.fromEvent(map as any, 'idle').map(() => map.getBounds())
-
-  // Render wind markers when map bounds change
-  boundsChanges
-    .flatMapLatest(bounds => fmiProxy.getAreaForecast(bounds))
+function renderAreaForecastOnSliderChanges(): void {
+  fmiProxy.getAreaForecast()
     .map(af => af.pointForecasts)
     .filter(pointForecasts => pointForecasts.length > 0)
     .map(pointForecasts => {
