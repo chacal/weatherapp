@@ -90,6 +90,14 @@ function renderAreaForecastOnSliderChanges(): void {
   })
 
 
+  const forecastsWithSliderValuesWhenMapIsReady = forecastsWithSliderValues
+    .toProperty()
+    .sampledBy(Bacon.fromEvent(map as any, 'idle'))
+    .first()
+
+  forecastsWithSliderValuesWhenMapIsReady.onValue(({forecasts, sliderValue}) => updateForecastTime(forecasts, sliderValue))
+
+
   function sliderChanges(slider: noUiSlider.noUiSlider): Bacon.EventStream<any, number> {
     return sliderValues('slide').debounceImmediate(300).merge(sliderValues('set')).skipDuplicates()
 
