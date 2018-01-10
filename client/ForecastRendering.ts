@@ -14,7 +14,7 @@ export default class ForecastRendering {
   constructor(private map: google.maps.Map) {}
 
   renderSelectedForecastItems(forecasts: PointForecast[], forecastItemIndex: number): void {
-    forecasts.forEach(forecast => drawForecastMarkerIfNotAlreadyShown.bind(this)({lat: forecast.lat, lng: forecast.lng}, forecast.forecastItems[forecastItemIndex]))
+    forecasts.forEach(forecast => drawForecastMarkerIfNotAlreadyShown.bind(this)({latitude: forecast.latitude, longitude: forecast.longitude}, forecast.forecastItems[forecastItemIndex]))
 
     function drawForecastMarkerIfNotAlreadyShown(location: Coords, forecastItem: ForecastItem) {
       if(!sameMarkerAlreadyDrawn.bind(this)()) {

@@ -1,8 +1,8 @@
 import R = require('ramda')
 
 export interface Coords {
-  lat: number,
-  lng: number
+  latitude: number,
+  longitude: number
 }
 
 export interface AreaForecast {
@@ -31,7 +31,7 @@ export class ForecastMarker {
 
   static drawGoogleMapsMarker(map: google.maps.Map, location: Coords, forecastItem: ForecastItem): google.maps.Marker {
     return new google.maps.Marker({
-      position: location,
+      position: {lat: location.latitude, lng: location.longitude},
       map: map,
       icon: {
         anchor: new google.maps.Point(50, 50),

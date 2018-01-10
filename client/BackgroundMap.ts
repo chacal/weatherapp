@@ -4,7 +4,7 @@ import TaustakarttaMapType from "./TaustakarttaMapType"
 
 export default function initMap(location: Coords): google.maps.Map {
   const map = new google.maps.Map(document.getElementById('map'), {
-    center: location,
+    center: {lat: location.latitude, lng: location.longitude},
     zoom: 5,
     streetViewControl: false,
     mapTypeControl: false,

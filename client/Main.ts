@@ -19,8 +19,8 @@ require('../node_modules/nouislider/distribute/nouislider.min.css')
 require('../public/css/main.css')
 
 const HOURS_PER_SLIDER_STEP = 3
-const currentLocation = {lat: 60, lng: 25}
 const fmiProxyUrl = 'https://www.tuuleeko.fi/fmiproxy'
+const currentLocation = {latitude: 60, longitude: 25}
 
 const map = initBgMap(currentLocation)
 const forecastRendering = new ForecastRendering(map)
@@ -81,7 +81,7 @@ function renderAreaForecastOnSliderChanges(): void {
     .flatMapLatest(({forecasts, slider}) => {
       return Bacon.once(slider.get() as number)
         .merge(sliderChanges(slider))
-        .map(sliderValue => ({forecasts, sliderValue}))
+        .map(sliderValue => ({forecasts, sliderValue})) as ForecastsWithSliderValuesStream
     })
 
   forecastsWithSliderValues.onValue(({forecasts, sliderValue}) => {
@@ -120,7 +120,7 @@ function showPointForecastOnMapClick(): void {
       .slidingWindow(2)
       .filter(events => !R.contains('dblClick', events))  // Click happens only if double click has not happened
       .map(events => R.last(events))
-      .filter(R.identity)
+      .filter(e => !!R.identity(e)) as Bacon.Property<any, google.maps.MouseEvent>
   }()
 
   // Show forecast popup when point on map is clicked
