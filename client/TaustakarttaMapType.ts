@@ -69,8 +69,21 @@ function getTaustakarttaProjection(): google.maps.Projection {
       const epsgLng = projected[0]
       const epsgLat = projected[1]
 
-      const scaledLng = (epsgLng - mapXOffsetFromEpsg3067Origin) / mapSizeInEpsg3067 * mapSizeInGoogle
-      const scaledLat = mapSizeInGoogle - (epsgLat - mapYOffsetFromEpsg3067Origin) / mapSizeInEpsg3067 * mapSizeInGoogle
+      let scaledLng = (epsgLng - mapXOffsetFromEpsg3067Origin) / mapSizeInEpsg3067 * mapSizeInGoogle
+      let scaledLat = mapSizeInGoogle - (epsgLat - mapYOffsetFromEpsg3067Origin) / mapSizeInEpsg3067 * mapSizeInGoogle
+
+      // Workaround for Google Maps' API change
+      // Apparently Maps API determines world size by converting [180,0] and [-180,0] to points and those
+      // must map to [256,256] and [0,256] or tile coordinate calculation doesn't work properly. proj4 projection doesn't
+      // handle these coordinates correctly and thus they are special cased here manually.
+      if(latLng.lng() === 180 && latLng.lat() === 0) {
+        scaledLng = mapSizeInGoogle
+        scaledLat = mapSizeInGoogle
+      } else if(latLng.lng() === -180 && latLng.lat() === 0) {
+        scaledLng = 0
+        scaledLat = mapSizeInGoogle
+      }
+
       //console.log("From latLng to point:", latLng.lng(), latLng.lat(), scaledLng, scaledLat)
       return new google.maps.Point(scaledLng, scaledLat)
     },
