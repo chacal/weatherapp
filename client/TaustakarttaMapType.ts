@@ -33,7 +33,7 @@ export default class TaustakarttaMapType extends google.maps.ImageMapType {
     }
     const tileX = normalizedCoord.x
     const tileY = normalizedCoord.y
-    return 'http://avoindata.maanmittauslaitos.fi/mapcache/wmts?layer=taustakartta&style=default&tilematrixset=ETRS-TM35FIN&Service=WMTS&Request=GetTile&Version=1.0.0&Format=image%2Fpng&TileMatrix=' + zoom + '&TileCol=' + tileX + '&TileRow=' + tileY
+    return 'https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/ETRS-TM35FIN/' + zoom + '/' + tileY + '/' + tileX + '.png'
 
     function getNormalizedCoord(coord: google.maps.Point, zoom: number): google.maps.Point {
       const tileRange = 1 << zoom
