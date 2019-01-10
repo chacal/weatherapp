@@ -79,7 +79,7 @@ function renderAreaForecastOnSliderChanges(): void {
       return {forecasts: pointForecasts, slider: navigationSlider.initialize(indexOfFirstForecastItemAfterCurrentTime, indexOfLastForecastItem)}
     })
     .flatMapLatest(({forecasts, slider}) => {
-      return Bacon.once(slider.get() as number)
+      return Bacon.once(parseInt(slider.get() as string))
         .merge(sliderChanges(slider))
         .map(sliderValue => ({forecasts, sliderValue})) as ForecastsWithSliderValuesStream
     })

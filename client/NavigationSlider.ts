@@ -31,7 +31,7 @@ export default class NavigationSlider {
     return this.sliderElem.noUiSlider
   }
 
-  getValue(): number { return this.sliderElem.noUiSlider ? this.sliderElem.noUiSlider.get() as number : undefined }
+  getValue(): number { return this.sliderElem.noUiSlider ? parseInt(this.sliderElem.noUiSlider.get() as string): undefined }
   setValue(newValue: number) { this.sliderElem.noUiSlider.set(newValue) }
   destroySlider() { this.sliderElem.noUiSlider.destroy() }
 }
