@@ -1,7 +1,5 @@
-import Proj4Module = require('proj4')
+import proj4 from 'proj4'
 import $ = require('jquery')
-
-const proj4 = Proj4Module.default
 
 // Register ETRS89 / ETRS-TM35FIN / EPSG:3067 projection to proj4
 proj4.defs("EPSG:3067","+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");

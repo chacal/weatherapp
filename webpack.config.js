@@ -1,5 +1,3 @@
-const {CheckerPlugin} = require('awesome-typescript-loader')
-
 module.exports = {
   entry: './client/Main.ts',
   output: {
@@ -19,29 +17,10 @@ module.exports = {
         loader: "source-map-loader"
       },
       {
-        test: /\.tsx?$/,
-        exclude: [/node_modules/],
+        test: /\.ts$/,
         use: [
           {
-            loader: 'babel-loader',
-            options: {
-              presets: ['es2015']
-            }
-          },
-          {
-            loader: 'awesome-typescript-loader'
-          }
-        ]
-      },
-      {
-        test: /\.jsx?$/,
-        exclude: [/node_modules/],
-        use: [
-          {
-            loader: 'babel-loader',
-            options: {
-              presets: ['es2015']
-            }
+            loader: 'ts-loader',
           }
         ]
       },
@@ -54,8 +33,5 @@ module.exports = {
   externals: ['google'],
   devServer: {
     contentBase: __dirname + '/public'
-  },
-  plugins: [
-    new CheckerPlugin()
-  ]
+  }
 }

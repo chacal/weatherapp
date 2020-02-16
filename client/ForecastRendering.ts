@@ -5,7 +5,6 @@ import R = require('ramda')
 import L = require('partial.lenses')
 
 import {PointForecast, Coords, ForecastItem, ForecastMarker} from "./ForecastDomain"
-import EventStream = Bacon.EventStream
 
 
 export default class ForecastRendering {

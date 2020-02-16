@@ -10,7 +10,7 @@ import ForecastRendering from './ForecastRendering'
 import {PointForecast, ForecastItem} from "./ForecastDomain"
 
 declare module 'baconjs' {
-  function fromEvent<E, A>(target: noUiSlider.noUiSlider, eventName: string, eventTransformer: (t: number[], m: number) => A): Bacon.EventStream<E, A>;
+  function fromEvent<E, A>(target: noUiSlider.noUiSlider, eventName: string, eventTransformer: (t: number[], m: number) => A): Bacon.EventStream<A>;
 }
 
 const modernizr = require('exports-loader?window.Modernizr!./modernizr-custom')
@@ -68,7 +68,7 @@ function initializeInfoButton(): void {
 
 
 function renderAreaForecastOnSliderChanges(): void {
-  type ForecastsWithSliderValuesStream = Bacon.EventStream<any, {forecasts: PointForecast[], sliderValue: number}>
+  type ForecastsWithSliderValuesStream = Bacon.EventStream<{forecasts: PointForecast[], sliderValue: number}>
 
   const forecastsWithSliderValues: ForecastsWithSliderValuesStream = fmiProxy.getAreaForecast()
     .map(af => af.pointForecasts)
@@ -98,10 +98,10 @@ function renderAreaForecastOnSliderChanges(): void {
   forecastsWithSliderValuesWhenMapIsReady.onValue(({forecasts, sliderValue}) => updateForecastTime(forecasts, sliderValue))
 
 
-  function sliderChanges(slider: noUiSlider.noUiSlider): Bacon.EventStream<any, number> {
+  function sliderChanges(slider: noUiSlider.noUiSlider): Bacon.EventStream<number> {
     return sliderValues('slide').debounceImmediate(300).merge(sliderValues('set')).skipDuplicates()
 
-    function sliderValues(eventName: string): Bacon.EventStream<any, number> {
+    function sliderValues(eventName: string): Bacon.EventStream<number> {
       return Bacon.fromEvent(slider, eventName, (values: number[], handle: number) => values[handle])
     }
   }
@@ -113,14 +113,14 @@ function renderAreaForecastOnSliderChanges(): void {
 
 
 function showPointForecastOnMapClick(): void {
-  const mapClicks: Bacon.Property<any, google.maps.MouseEvent> = function() {  // Only for namespacing, called immediately
+  const mapClicks: Bacon.Property<google.maps.MouseEvent> = function() {  // Only for namespacing, called immediately
     const delayedClicks = Bacon.fromEvent(map as any, 'click').delay(200)
     const dblClicks = Bacon.fromEvent(map as any, 'dblclick').map('dblClick')
     return delayedClicks.merge(dblClicks)
       .slidingWindow(2)
       .filter(events => !R.contains('dblClick', events))  // Click happens only if double click has not happened
       .map(events => R.last(events))
-      .filter(e => !!R.identity(e)) as Bacon.Property<any, google.maps.MouseEvent>
+      .filter(e => !!R.identity(e)) as Bacon.Property<google.maps.MouseEvent>
   }()
 
   // Show forecast popup when point on map is clicked
