@@ -1,6 +1,8 @@
 trigger:
   - prod
 
+pr: none
+
 jobs:
   - job: build
     displayName: Build container
