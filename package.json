@@ -7,7 +7,7 @@
     "chart.js": "^1.0.2",
     "compression": "^1.7.4",
     "express": "^4.17.1",
-    "jquery": "^3.4.1",
+    "jquery": "^3.5.0",
     "moment": "^2.24.0",
     "morgan": "^1.10.0",
     "normalize.css": "^5.0.0",
