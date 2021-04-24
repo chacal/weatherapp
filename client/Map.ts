@@ -34,7 +34,8 @@ const proj3067 = new L.Proj.CRS('EPSG:3067', '+proj=utm +zone=35 +ellps=GRS80 +t
 
 export default function initMap(location: LatLngExpression): L.Map {
   const map = L.map('map', {
-    crs: proj3067
+    crs: proj3067,
+    preferCanvas: true
   })
     .setView(location, 5)
 
