@@ -12,6 +12,8 @@ const fmiProxyUrl = 'https://www.tuuleeko.fi/fmiproxy'
 
 const fmiProxy = new FMIProxy(fmiProxyUrl)
 const map = new Map('map', currentLocation)
+const slider = new NavigationSlider('slider')
+
 
 fmiProxy.getAreaForecastForEveryThirdHour()
   .then(f => initializeUI(f))
@@ -22,14 +24,10 @@ function initializeUI(forecast: AreaForecast) {
   const firsItemTime = parseISO(items[0].time)
   const lastItemTime = parseISO(items[items.length - 1].time)
 
-  renderForecastForTime(forecast, firsItemTime)
   initializeSlider(firsItemTime, lastItemTime, forecast)
-}
+  initializeNavigationButtons()
 
-function initializeSlider(firsItemTime: Date, lastItemTime: Date, forecast: AreaForecast) {
-  const slider = new NavigationSlider('slider')
-  const s = slider.initialize(firsItemTime.getTime(), lastItemTime.getTime(), THREE_HOURS_MS)
-  s.on('slide', ([ts]) => renderForecastForTime(forecast, new Date(ts)))
+  renderForecastForTime(forecast, firsItemTime)
 }
 
 function renderForecastForTime(forecast: AreaForecast, time: Date) {
@@ -43,3 +41,25 @@ function updateTimeField(time: Date) {
     timeField.innerText = format(time, 'EEE HH:mm')
   }
 }
+
+function initializeSlider(firsItemTime: Date, lastItemTime: Date, forecast: AreaForecast) {
+  const s = slider.initialize(firsItemTime.getTime(), lastItemTime.getTime(), THREE_HOURS_MS)
+  s.on('update', ([ts]) => renderForecastForTime(forecast, new Date(ts)))
+}
+
+function initializeNavigationButtons() {
+  const prevForecastBtn = document.getElementById('previousForecast')
+  if (prevForecastBtn) {
+    prevForecastBtn.addEventListener('click', event => {
+      slider.setValue(slider.getValue() - THREE_HOURS_MS)
+    })
+  }
+
+  const nextForecastBtn = document.getElementById('nextForecast')
+  if (nextForecastBtn) {
+    nextForecastBtn.addEventListener('click', event => {
+      slider.setValue(slider.getValue() + THREE_HOURS_MS)
+    })
+  }
+}
+
