@@ -3,7 +3,7 @@ import Map from './Map'
 import FMIProxy from './FMIProxy'
 import { AreaForecast } from './ForecastDomain'
 import NavigationSlider from './NavigationSlider'
-import { parseISO } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 
 const THREE_HOURS_MS = 3 * 60 * 60 * 1000
 
@@ -22,12 +22,24 @@ function initializeUI(forecast: AreaForecast) {
   const firsItemTime = parseISO(items[0].time)
   const lastItemTime = parseISO(items[items.length - 1].time)
 
-  map.renderMarkersForTime(forecast, firsItemTime)
+  renderForecastForTime(forecast, firsItemTime)
   initializeSlider(firsItemTime, lastItemTime, forecast)
 }
 
 function initializeSlider(firsItemTime: Date, lastItemTime: Date, forecast: AreaForecast) {
   const slider = new NavigationSlider('slider')
   const s = slider.initialize(firsItemTime.getTime(), lastItemTime.getTime(), THREE_HOURS_MS)
-  s.on('slide', ([ts]) => map.renderMarkersForTime(forecast, new Date(ts)))
+  s.on('slide', ([ts]) => renderForecastForTime(forecast, new Date(ts)))
+}
+
+function renderForecastForTime(forecast: AreaForecast, time: Date) {
+  map.renderMarkersForTime(forecast, time)
+  updateTimeField(time)
+}
+
+function updateTimeField(time: Date) {
+  const timeField = document.getElementById('renderedTime')
+  if (timeField) {
+    timeField.innerText = format(time, 'EEE HH:mm')
+  }
 }

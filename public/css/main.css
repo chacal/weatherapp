@@ -40,3 +40,35 @@ a:hover {
 #slider .noUi-connect {
     background-color: #0099FF;
 }
+
+.mapControl {
+    margin: 0 10px;
+    height: 40px;
+    line-height: 40px;
+    text-align: center;
+    box-shadow: rgba(0, 0, 0, 0.298039) 0 1px 4px -1px;
+    border: none;
+    background-color: #fff;
+    font-family: Roboto,Arial,sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    border-radius: 2px;
+    color: #666;
+    padding: 0;
+}
+
+#renderedTime {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    margin-top: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0;
+    height: 28px;
+    line-height: 28px;
+    width: 120px;
+    font-size: 18px;
+    z-index: 1000;
+}
