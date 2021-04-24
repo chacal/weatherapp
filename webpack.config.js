@@ -28,7 +28,11 @@ module.exports = {
           }
         ],
         include: /public/,
-      }
+      },
+      {
+        test: /\.css$/i,
+        use: ['style-loader', 'css-loader'],
+      },
     ],
   },
   plugins: [
