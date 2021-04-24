@@ -1,10 +1,18 @@
 {
   "compilerOptions": {
-    "outDir": "./built",
-    "allowJs": true,
+    "outDir": "./built/",
     "target": "es6",
     "module": "commonjs",
-    "esModuleInterop":true
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "lib": [
+      "es6",
+      "dom"
+    ],
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": true,
+    "skipLibCheck": true
   },
   "include": [
     "./client/**/*"
