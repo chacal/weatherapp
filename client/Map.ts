@@ -2,6 +2,9 @@ import '../node_modules/leaflet/dist/leaflet.css'
 
 import 'proj4leaflet'
 import L, { LatLngExpression } from 'leaflet'
+import { AreaForecast } from './ForecastDomain'
+import { isEqual, parseISO } from 'date-fns'
+import { WindMarker } from './WindMarker'
 
 const NLS_API_KEY = '6a15e997-70e7-4de9-bfdc-f7cc7f52b6e5'
 
@@ -32,22 +35,38 @@ const proj3067 = new L.Proj.CRS('EPSG:3067', '+proj=utm +zone=35 +ellps=GRS80 +t
   ]
 })
 
-export default function initMap(location: LatLngExpression): L.Map {
-  const map = L.map('map', {
-    crs: proj3067,
-    preferCanvas: true
-  })
-    .setView(location, 5)
+export default class Map {
+  map: L.Map
+  markersLayer = new L.LayerGroup()
 
-  const url = `https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/ETRS-TM35FIN/{z}/{y}/{x}.png?api-key=${NLS_API_KEY}`
+  constructor(elementId: string, location: LatLngExpression) {
+    this.map = L.map(elementId, {
+      crs: proj3067,
+      preferCanvas: true
+    })
+      .setView(location, 5)
 
-  L.tileLayer(url, {
-    maxZoom: 12,
-    minZoom: 3,
-    opacity: 0.6
-  }).addTo(map)
+    const url = `https://avoin-karttakuva.maanmittauslaitos.fi/avoin/wmts/1.0.0/taustakartta/default/ETRS-TM35FIN/{z}/{y}/{x}.png?api-key=${NLS_API_KEY}`
 
-  return map
+    L.tileLayer(url, {
+      maxZoom: 12,
+      minZoom: 3,
+      opacity: 0.6
+    }).addTo(this.map)
+
+    this.markersLayer.addTo(this.map)
+  }
+
+  renderMarkersForTime(forecast: AreaForecast, time: Date) {
+    const index = forecast.pointForecasts[0].forecastItems.findIndex(item => isEqual(parseISO(item.time), time))
+
+    this.markersLayer.clearLayers()
+    forecast.pointForecasts.forEach(point => {
+      const m = new WindMarker({
+        lat: point.latitude,
+        lng: point.longitude
+      }, { forecastItem: point.forecastItems[index] })
+      this.markersLayer.addLayer(m)
+    })
+  }
 }
-
-

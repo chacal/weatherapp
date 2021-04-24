@@ -18,5 +18,5 @@ export interface ForecastItem {
   windSpeedMs: number,
   windDir: number,
   pressureMbar: number,
-  time: Date
+  time: string
 }
