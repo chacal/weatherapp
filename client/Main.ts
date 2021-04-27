@@ -4,6 +4,10 @@ import FMIProxy from './FMIProxy'
 import { AreaForecast } from './ForecastDomain'
 import NavigationSlider from './NavigationSlider'
 import { format, parseISO } from 'date-fns'
+import { EventStream, fromEvent, fromPromise } from 'baconjs'
+import { LeafletMouseEvent } from 'leaflet'
+import $ from 'jquery'
+import { showPointForecastLoadingPopup, showPointForecastPopup } from './ForecastRendering'
 
 const THREE_HOURS_MS = 3 * 60 * 60 * 1000
 
@@ -26,6 +30,7 @@ function initializeUI(forecast: AreaForecast) {
 
   initializeSlider(firsItemTime, lastItemTime, forecast)
   initializeNavigationButtons()
+  initializeForecastPopup()
 
   renderForecastForTime(forecast, firsItemTime)
 }
@@ -63,3 +68,28 @@ function initializeNavigationButtons() {
   }
 }
 
+function initializeForecastPopup() {
+  const clicks: EventStream<LeafletMouseEvent> = fromEvent(map.map, 'click')
+
+  const singleClicks = clicks
+    .bufferWithTime(200)
+    .filter(events => events.length === 1)
+    .map(events => events[0].latlng)
+
+  singleClicks
+    .onValue(() => showPointForecastLoadingPopup())
+
+  singleClicks
+    .flatMapLatest(latLng => fromPromise(fmiProxy.getPointForecast(latLng)))
+    .map(pf => pf.forecastItems)
+    .onValue(forecastItems => showPointForecastPopup(forecastItems))
+
+  $('#popupContainer a').on('click', e => e.stopPropagation())  // Prevent link clicks from closing the popup
+
+  $('#popupContainer').on('click', () => {
+    $('#popupContainer').css('display', 'none')
+    $('#popupContainer #infoPopup').css('display', 'none')
+    $('#popupContainer #forecastPopup').css('display', 'none')
+  })
+
+}

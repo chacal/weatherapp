@@ -13,8 +13,7 @@ export default class FMIProxy {
   }
 
   getAreaForecastForEveryThirdHour(): Promise<AreaForecast> {
-    const now = new Date()
-    const lastThirdHourMoment = startOfHour(subHours(now, now.getHours() % 3))
+    const lastThirdHourMoment = latestThirdHourMoment()
 
     return this.getAreaForecast()
       .then(af => {
@@ -35,8 +34,13 @@ export default class FMIProxy {
   }
 
   getPointForecast(coords: LatLng): Promise<PointForecast> {
-    const startTime = encodeURIComponent(new Date().toISOString())
+    const startTime = encodeURIComponent(latestThirdHourMoment().toISOString())
     return fetch(`${this.fmiProxyUrl}/hirlam-forecast?lat=${coords.lat}&lon=${coords.lng}&startTime=${startTime}`)
       .then(res => res.json())
   }
+}
+
+function latestThirdHourMoment() {
+  const now = new Date()
+  return startOfHour(subHours(now, now.getHours() % 3))
 }
