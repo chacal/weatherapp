@@ -4,3 +4,4 @@ public/js/bundle.js*
 public/js/*.png
 logs/
 built/
+old/

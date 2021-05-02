@@ -5,3 +5,4 @@ node_modules
 public/js
 azure-pipelines.yml
 Dockerfile
+old/
