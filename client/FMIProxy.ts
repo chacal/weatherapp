@@ -1,20 +1,46 @@
-import Bacon = require('baconjs')
-import moment = require('moment')
-
-import {AreaForecast, PointForecast} from "./ForecastDomain"
+import { AreaForecast, PointForecast } from './ForecastDomain'
+import { LatLng } from 'leaflet'
+import { isAfter, isEqual, parseISO, startOfHour, subHours } from 'date-fns'
 
 export default class FMIProxy {
-  constructor(private fmiProxyUrl: string) {}
+  constructor(private fmiProxyUrl: string) {
+  }
 
-  getAreaForecast(): Bacon.EventStream<AreaForecast> {
-    return Bacon.fromPromise(fetch(`${this.fmiProxyUrl}/hirlam-forecast`)
+  getAreaForecast(): Promise<AreaForecast> {
+    return fetch(`${this.fmiProxyUrl}/hirlam-forecast`)
+      .then(res => res.json()
+      )
+  }
+
+  getAreaForecastForEveryThirdHour(): Promise<AreaForecast> {
+    const lastThirdHourMoment = latestThirdHourMoment()
+
+    return this.getAreaForecast()
+      .then(af => {
+        return {
+          publishTime: af.publishTime,
+          pointForecasts: af.pointForecasts.map(pf => ({
+            publishTime: pf.publishTime,
+            longitude: pf.longitude,
+            latitude: pf.latitude,
+            forecastItems: pf.forecastItems.filter(item => isMostRecentOrFutureEveryThirdHour(parseISO(item.time)))
+          }))
+        }
+      })
+
+    function isMostRecentOrFutureEveryThirdHour(date: Date) {
+      return isEqual(date, lastThirdHourMoment) || isAfter(date, lastThirdHourMoment) && date.getHours() % 3 == 0
+    }
+  }
+
+  getPointForecast(coords: LatLng): Promise<PointForecast> {
+    const startTime = encodeURIComponent(latestThirdHourMoment().toISOString())
+    return fetch(`${this.fmiProxyUrl}/hirlam-forecast?lat=${coords.lat}&lon=${coords.lng}&startTime=${startTime}`)
       .then(res => res.json())
-    )
   }
+}
 
-  getPointForecast(coords: google.maps.LatLng): Bacon.EventStream<PointForecast> {
-    const startTime = encodeURIComponent(moment().format())
-    return Bacon.fromPromise(fetch(`${this.fmiProxyUrl}/hirlam-forecast?lat=${coords.lat()}&lon=${coords.lng()}&startTime=${startTime}`)
-      .then(res => res.json()))
-  }
+function latestThirdHourMoment() {
+  const now = new Date()
+  return startOfHour(subHours(now, now.getHours() % 3))
 }

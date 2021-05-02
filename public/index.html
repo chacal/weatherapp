@@ -7,13 +7,20 @@
   <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
   <title>Tuuleeko.fi</title>
   <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-          (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    (function (i, s, o, g, r, a, m) {
+      i['GoogleAnalyticsObject'] = r
+      i[r] = i[r] || function () {
+        (i[r].q = i[r].q || []).push(arguments)
+      }, i[r].l = 1 * new Date()
+      a = s.createElement(o),
+        m = s.getElementsByTagName(o)[0]
+      a.async = 1
+      a.src = g
+      m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga')
 
-    ga('create', 'UA-76212225-1', 'auto');
-    ga('send', 'pageview');
+    ga('create', 'UA-76212225-1', 'auto')
+    ga('send', 'pageview')
 
   </script>
 </head>
@@ -21,26 +28,12 @@
 <body>
 <div id="map"></div>
 <div id="slider"></div>
+<div id="renderedTime" class="mapControl">-</div>
+<div id="navigationContainer">
+  <button id="previousForecast" class="navigationButton mapControl"><</button>
+  <button id="nextForecast" class="navigationButton mapControl">></button>
+</div>
 <div id="popupContainer" style="display: none;">
-  <div id="infoPopup" class="popup" style="display: none;">
-    <p>tuuleeko.fi shows the latest wind speed forecast for the Finnish Gulf by Finnish Meteorological
-    Institute.
-    </p>
-    <p>
-    NOTE! The forecast data are from FMI's HIRLAM model and is not reviewed by a professional meteorologist!
-    As such, using it as the primary source for forecasting is not recommended. Use FMI's
-    official <a href="http://ilmatieteenlaitos.fi/saatiedotus-merenkulkijoille" target="_blank">marine forecast</a> instead.
-    </p>
-    <p>
-    HIRLAM forecast data is licensed by Finnish Meteorological Institute using <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a> license.
-    </p>
-    <p>
-    The used "Background map series" by National Land Survey of Finland is licensed using <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a> license.
-    </p>
-    <p>
-    Contact: <a href="mailto:tuuleeko.yllapito@gmail.com">tuuleeko.yllapito@gmail.com</a>
-    </p>
-  </div>
   <div id="forecastPopup" class="popup" style="display: none;">
     <div class="forecastHeader">Wind speed (m/s)</div>
     <div class="forecastData"></div>
@@ -52,7 +45,6 @@
     </div>
   </div>
 </div>
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDSMZ8r9_XrWpvFeLikZYcnJFtFlsfvrtk"></script>
 <script src="js/bundle.js"></script>
 </body>
 </html>
