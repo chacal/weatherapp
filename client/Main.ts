@@ -42,10 +42,7 @@ function renderForecastForTime(forecast: AreaForecast, time: Date) {
 }
 
 function updateTimeField(time: Date) {
-  const timeField = document.getElementById('renderedTime')
-  if (timeField) {
-    timeField.innerText = format(time, 'EEE HH:mm')
-  }
+  $('#renderedTime').text(format(time, 'EEE HH:mm'))
 }
 
 function initializeSlider(firsItemTime: Date, lastItemTime: Date, forecast: AreaForecast) {
@@ -54,19 +51,8 @@ function initializeSlider(firsItemTime: Date, lastItemTime: Date, forecast: Area
 }
 
 function initializeNavigationButtons() {
-  const prevForecastBtn = document.getElementById('previousForecast')
-  if (prevForecastBtn) {
-    prevForecastBtn.addEventListener('click', event => {
-      slider.setValue(slider.getValue() - THREE_HOURS_MS)
-    })
-  }
-
-  const nextForecastBtn = document.getElementById('nextForecast')
-  if (nextForecastBtn) {
-    nextForecastBtn.addEventListener('click', event => {
-      slider.setValue(slider.getValue() + THREE_HOURS_MS)
-    })
-  }
+  $('#previousForecast').on('click', () => slider.setValue(slider.getValue() - THREE_HOURS_MS))
+  $('#nextForecast').on('click', () => slider.setValue(slider.getValue() + THREE_HOURS_MS))
 }
 
 function initializeForecastPopup() {
