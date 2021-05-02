@@ -30,6 +30,7 @@ function initializeUI(forecast: AreaForecast) {
 
   initializeSlider(firsItemTime, lastItemTime, forecast)
   initializeNavigationButtons()
+  initializeInfoButton()
   initializeForecastPopup()
 
   renderForecastForTime(forecast, firsItemTime)
@@ -91,5 +92,15 @@ function initializeForecastPopup() {
     $('#popupContainer #infoPopup').css('display', 'none')
     $('#popupContainer #forecastPopup').css('display', 'none')
   })
+}
 
+function initializeInfoButton() {
+  $('#infoButton').on('click', showInfoPopup)
+
+  function showInfoPopup() {
+    $('#popupContainer').css('display', '-webkit-flex')
+    $('#popupContainer').css('display', 'flex')
+    $('#popupContainer #infoPopup').css('display', '-webkit-flex')
+    $('#popupContainer #infoPopup').css('display', 'flex')
+  }
 }

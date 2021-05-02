@@ -80,7 +80,14 @@ a:hover {
     z-index: 1000;
 }
 
-.navigationButton {
+#infoButton {
+    z-index: 1000;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.navigationButton, #infoButton {
     width: 40px;
     cursor: pointer;
     margin: 0 6px;

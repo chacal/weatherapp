@@ -28,12 +28,32 @@
 <body>
 <div id="map"></div>
 <div id="slider"></div>
+<button id="infoButton" class="mapControl">i</button>
 <div id="renderedTime" class="mapControl">-</div>
 <div id="navigationContainer">
   <button id="previousForecast" class="navigationButton mapControl"><</button>
   <button id="nextForecast" class="navigationButton mapControl">></button>
 </div>
 <div id="popupContainer" style="display: none;">
+  <div id="infoPopup" class="popup" style="display: none;">
+    <p>tuuleeko.fi shows the latest wind speed forecast for the Finnish Gulf by Finnish Meteorological
+      Institute.
+    </p>
+    <p>
+      NOTE! The forecast data are from FMI's HIRLAM model and is not reviewed by a professional meteorologist!
+      As such, using it as the primary source for forecasting is not recommended. Use FMI's
+      official <a href="http://ilmatieteenlaitos.fi/saatiedotus-merenkulkijoille" target="_blank">marine forecast</a> instead.
+    </p>
+    <p>
+      HIRLAM forecast data is licensed by Finnish Meteorological Institute using <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a> license.
+    </p>
+    <p>
+      The used "Background map series" by National Land Survey of Finland is licensed using <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank">CC BY 4.0</a> license.
+    </p>
+    <p>
+      Contact: <a href="mailto:tuuleeko.yllapito@gmail.com">tuuleeko.yllapito@gmail.com</a>
+    </p>
+  </div>
   <div id="forecastPopup" class="popup" style="display: none;">
     <div class="forecastHeader">Wind speed (m/s)</div>
     <div class="forecastData"></div>
