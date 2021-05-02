@@ -11,7 +11,7 @@ import { showPointForecastLoadingPopup, showPointForecastPopup } from './Forecas
 
 const THREE_HOURS_MS = 3 * 60 * 60 * 1000
 
-const currentLocation = { lat: 60, lng: 24 }
+const currentLocation = { lat: 59.8, lng: 24 }
 const fmiProxyUrl = 'https://www.tuuleeko.fi/fmiproxy'
 
 const fmiProxy = new FMIProxy(fmiProxyUrl)
