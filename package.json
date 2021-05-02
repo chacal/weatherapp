@@ -18,7 +18,7 @@
     "fork-ts-checker-notifier-webpack-plugin": "^4.0.0",
     "fork-ts-checker-webpack-plugin": "^6.2.5",
     "jquery": "^3.6.0",
-    "leaflet": "^1.7.1",
+    "leaflet": "=1.6.0",
     "nouislider": "^14.7.0",
     "proj4leaflet": "^1.0.2",
     "style-loader": "^2.0.0",
